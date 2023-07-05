@@ -12,6 +12,12 @@ const App = () => {
 		return Math.floor(Math.random() * new_max) + min;
 	};
 
+	const handleVote = () => {
+		const copy = { ...votes };
+		copy[selected] = copy[selected] + 1;
+		setVotes(copy);
+	};
+
 	const anecdotes = [
 		"If it hurts, do it more often.",
 		"Adding manpower to a late software project makes it later!",
@@ -23,11 +29,21 @@ const App = () => {
 		"The only way to go fast, is to go well.",
 	];
 
+	let init_votes = {};
+	let i = 0;
+	for (const anecdote in anecdotes) {
+		init_votes[i] = 0;
+		i++;
+	}
+
 	const [selected, setSelected] = useState(0);
+	const [votes, setVotes] = useState(init_votes);
 
 	return (
 		<div>
 			<p>{anecdotes[selected]}</p>
+			<p>has {votes[selected]} votes</p>
+			<Button clickHandler={handleVote} text={"vote"} />
 			<Button
 				clickHandler={() => setSelected(random(0, anecdotes.length))}
 				text={"next anecdote"}
