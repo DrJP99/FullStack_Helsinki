@@ -16,6 +16,15 @@ const App = () => {
 		const copy = { ...votes };
 		copy[selected] = copy[selected] + 1;
 		setVotes(copy);
+
+		// console.log(copy);
+		// console.log("selected", selected);
+		// console.log("max index", mostVoted);
+
+		if (copy[selected] > copy[mostVoted] && selected !== mostVoted) {
+			// console.log(copy[selected], "is bigger than", copy[mostVoted]);
+			setMost(selected);
+		}
 	};
 
 	const anecdotes = [
@@ -39,8 +48,11 @@ const App = () => {
 	const [selected, setSelected] = useState(0);
 	const [votes, setVotes] = useState(init_votes);
 
+	const [mostVoted, setMost] = useState(0);
+
 	return (
 		<div>
+			<h1>Anecdote of the day</h1>
 			<p>{anecdotes[selected]}</p>
 			<p>has {votes[selected]} votes</p>
 			<Button clickHandler={handleVote} text={"vote"} />
@@ -48,6 +60,10 @@ const App = () => {
 				clickHandler={() => setSelected(random(0, anecdotes.length))}
 				text={"next anecdote"}
 			/>
+
+			<h1>Anecdote with most votes</h1>
+			<p>{anecdotes[mostVoted]}</p>
+			<p>has {votes[mostVoted]} votes</p>
 		</div>
 	);
 };
