@@ -5,11 +5,17 @@ const Button = ({ handleClick, text }) => (
 );
 
 const Display = ({ good, neutral, bad }) => {
+	const all = good + neutral + bad;
+	const avg = (good - bad) / all;
+	const pos = good / all;
 	return (
 		<>
 			<p>good: {good}</p>
 			<p>neutral: {neutral} </p>
 			<p>bad: {bad} </p>
+			<p>all: {all} </p>
+			<p>average: {avg}</p>
+			<p>positive: {pos}%</p>
 		</>
 	);
 };
