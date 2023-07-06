@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 
+import Notification from "./components/Notification";
 import personsService from "./services/persons";
 
 const Filter = ({ search, handleChange }) => {
@@ -49,6 +49,7 @@ const App = () => {
 	const [newName, setNewName] = useState("");
 	const [newNumber, setNewNumber] = useState("");
 	const [search, setSearch] = useState("");
+	const [notificationMessage, setNotification] = useState(null);
 
 	useEffect(() => {
 		personsService
@@ -79,8 +80,12 @@ const App = () => {
 
 			personsService.create(newPersonObject).then((returnedPerson) => {
 				setPersons(persons.concat(returnedPerson));
+				setNotification(`Added ${newName} to phonebook`);
 				setNewName("");
 				setNewNumber("");
+				setTimeout(() => {
+					setNotification(null);
+				}, 5000);
 			});
 		} else {
 			if (
@@ -98,6 +103,14 @@ const App = () => {
 								p.id === returnedPerson.id ? returnedPerson : p
 							)
 						);
+						setNotification(
+							`${newName} changed number to ${newNumber}`
+						);
+						setNewName("");
+						setNewNumber("");
+						setTimeout(() => {
+							setNotification(null);
+						}, 5000);
 					});
 			}
 		}
@@ -125,6 +138,7 @@ const App = () => {
 	return (
 		<div>
 			<h2>Phonebook</h2>
+			<Notification message={notificationMessage} />
 			<Filter search={search} handleChange={handleChange} />
 			<h2>Add a new person</h2>
 			<Form

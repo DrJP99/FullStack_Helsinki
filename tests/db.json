@@ -34,11 +34,6 @@
       "content": "its taking too long",
       "important": false,
       "id": 7
-    },
-    {
-      "content": "my new note",
-      "important": true,
-      "id": 8
     }
   ]
 }
