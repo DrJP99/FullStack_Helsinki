@@ -50,6 +50,7 @@ const App = () => {
 	const [newNumber, setNewNumber] = useState("");
 	const [search, setSearch] = useState("");
 	const [notificationMessage, setNotification] = useState(null);
+	const [notificationType, setNotifType] = useState("success");
 
 	useEffect(() => {
 		personsService
@@ -80,6 +81,7 @@ const App = () => {
 
 			personsService.create(newPersonObject).then((returnedPerson) => {
 				setPersons(persons.concat(returnedPerson));
+				setNotifType("success");
 				setNotification(`Added ${newName} to phonebook`);
 				setNewName("");
 				setNewNumber("");
@@ -103,6 +105,7 @@ const App = () => {
 								p.id === returnedPerson.id ? returnedPerson : p
 							)
 						);
+						setNotifType("success");
 						setNotification(
 							`${newName} changed number to ${newNumber}`
 						);
@@ -128,17 +131,33 @@ const App = () => {
 	const deletePerson = (id) => {
 		const person_name = persons.filter((p) => p.id === id)[0].name;
 		if (window.confirm(`Do you want to delete ${person_name}`)) {
-			personsService.del(id).then((res) => {
-				const new_list = persons.filter((p) => p.id !== id);
-				setPersons(new_list);
-			});
+			personsService
+				.del(id)
+				.then(() => {
+					const new_list = persons.filter((p) => p.id !== id);
+					setPersons(new_list);
+				})
+				.catch(() => {
+					setNotifType("fail");
+					setNotification(
+						`Information on the person ${person_name} with id ${id} has been already removed from the server`
+					);
+					const new_list = persons.filter((p) => p.id !== id);
+					setPersons(new_list);
+					setTimeout(() => {
+						setNotification(null);
+					}, 5000);
+				});
 		}
 	};
 
 	return (
 		<div>
 			<h2>Phonebook</h2>
-			<Notification message={notificationMessage} />
+			<Notification
+				message={notificationMessage}
+				type={notificationType}
+			/>
 			<Filter search={search} handleChange={handleChange} />
 			<h2>Add a new person</h2>
 			<Form
