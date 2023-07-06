@@ -1,5 +1,43 @@
 import { useState } from "react";
 
+const Filter = ({ search, handleChange }) => {
+	return (
+		<p>
+			filter shown with{" "}
+			<input value={search} onChange={handleChange("search")} />
+		</p>
+	);
+};
+
+const Form = ({ newName, newNumber, handleChange, handleNameSubmit }) => {
+	return (
+		<form onSubmit={handleNameSubmit}>
+			<div>
+				name: <input value={newName} onChange={handleChange("name")} />
+			</div>
+			<div>
+				number:{" "}
+				<input value={newNumber} onChange={handleChange("number")} />
+			</div>
+			<div>
+				<button type="submit">add</button>
+			</div>
+		</form>
+	);
+};
+
+const Persons = ({ searchResults }) => {
+	return (
+		<div>
+			{searchResults().map((person) => (
+				<div key={person.id}>
+					{person.name} ({person.number})
+				</div>
+			))}
+		</div>
+	);
+};
+
 const App = () => {
 	const [persons, setPersons] = useState([
 		{ name: "Arto Hellas", number: "040-123456", id: 1 },
@@ -33,6 +71,7 @@ const App = () => {
 			};
 			setPersons(persons.concat(newPersonObject));
 			setNewName("");
+			setNewNumber("");
 		} else {
 			window.alert(`${newName} is already added to phonebook`);
 		}
@@ -50,35 +89,16 @@ const App = () => {
 	return (
 		<div>
 			<h2>Phonebook</h2>
-
-			<p>
-				filter shown with{" "}
-				<input value={search} onChange={handleChange("search")} />
-			</p>
-
+			<Filter search={search} handleChange={handleChange} />
 			<h2>Add a new person</h2>
-			<form onSubmit={handleNameSubmit}>
-				<div>
-					name:{" "}
-					<input value={newName} onChange={handleChange("name")} />
-				</div>
-				<div>
-					number:{" "}
-					<input
-						value={newNumber}
-						onChange={handleChange("number")}
-					/>
-				</div>
-				<div>
-					<button type="submit">add</button>
-				</div>
-			</form>
+			<Form
+				newName={newName}
+				newNumber={newNumber}
+				handleChange={handleChange}
+				handleNameSubmit={handleNameSubmit}
+			/>
 			<h2>Numbers</h2>
-			{searchResults().map((person) => (
-				<div key={person.id}>
-					{person.name} ({person.number})
-				</div>
-			))}
+			<Persons searchResults={searchResults} />
 		</div>
 	);
 };
