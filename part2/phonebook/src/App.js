@@ -29,12 +29,15 @@ const Form = ({ newName, newNumber, handleChange, handleNameSubmit }) => {
 	);
 };
 
-const Persons = ({ searchResults }) => {
+const Persons = ({ searchResults, deletePerson }) => {
 	return (
 		<div>
 			{searchResults().map((person) => (
 				<div key={person.id}>
-					{person.name} ({person.number})
+					{person.name} ({person.number}){" "}
+					<button onClick={() => deletePerson(person.id)}>
+						delete
+					</button>
 				</div>
 			))}
 		</div>
@@ -71,7 +74,7 @@ const App = () => {
 			const newPersonObject = {
 				name: newName,
 				number: newNumber,
-				id: persons.length + 1,
+				id: persons[persons.length - 1].id + 1,
 			};
 
 			personsService.create(newPersonObject).then((returnedPerson) => {
@@ -93,6 +96,16 @@ const App = () => {
 		return persons.filter((person) => person.name.includes(search));
 	};
 
+	const deletePerson = (id) => {
+		const person_name = persons.filter((p) => p.id === id)[0].name;
+		if (window.confirm(`Do you want to delete ${person_name}`)) {
+			personsService.del(id).then((res) => {
+				const new_list = persons.filter((p) => p.id !== id);
+				setPersons(new_list);
+			});
+		}
+	};
+
 	return (
 		<div>
 			<h2>Phonebook</h2>
@@ -105,7 +118,10 @@ const App = () => {
 				handleNameSubmit={handleNameSubmit}
 			/>
 			<h2>Numbers</h2>
-			<Persons searchResults={searchResults} />
+			<Persons
+				searchResults={searchResults}
+				deletePerson={deletePerson}
+			/>
 		</div>
 	);
 };
