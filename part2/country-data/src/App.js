@@ -46,14 +46,7 @@ const Display = ({ country, allCountries }) => {
 						<li key={lang}>{country.languages[lang]}</li>
 					))}
 				</ul>
-				<span
-					className="flag"
-					role="img"
-					aria-label="flag"
-					style={{ fontSize: 500, margin: 0, padding: 0 }}
-				>
-					{country.flag}
-				</span>
+				<img src={country.flags.png} alt={country.flag} />
 			</div>
 		);
 	}
