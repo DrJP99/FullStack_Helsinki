@@ -12,7 +12,7 @@ const create = (newPerson) => {
 };
 
 const update = (id, newPerson) => {
-	const req = axios.post(`${base_url}/${id}`, newPerson);
+	const req = axios.put(`${base_url}/${id}`, newPerson);
 	return req.then((res) => res.data);
 };
 

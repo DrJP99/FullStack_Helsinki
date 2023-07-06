@@ -83,7 +83,23 @@ const App = () => {
 				setNewNumber("");
 			});
 		} else {
-			window.alert(`${newName} is already added to phonebook`);
+			if (
+				window.confirm(
+					`${newName} is already added to your phonebook, would you like to replace the old number with the new one?`
+				)
+			) {
+				const person = persons.find((p) => p.name === newName);
+				const changedPerson = { ...person, number: newNumber };
+				personsService
+					.update(changedPerson.id, changedPerson)
+					.then((returnedPerson) => {
+						setPersons(
+							persons.map((p) =>
+								p.id === returnedPerson.id ? returnedPerson : p
+							)
+						);
+					});
+			}
 		}
 	};
 
