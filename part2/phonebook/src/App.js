@@ -13,11 +13,21 @@ const App = () => {
 		event.preventDefault();
 
 		// console.log("name submitted:", newName);
-		const newPersonObject = {
-			name: newName,
-		};
-		setPersons(persons.concat(newPersonObject));
-		setNewName("");
+		if (!checkIfSaved(newName)) {
+			const newPersonObject = {
+				name: newName,
+			};
+			setPersons(persons.concat(newPersonObject));
+			setNewName("");
+		} else {
+			console.log("Already saved that guy");
+			window.alert(`${newName} is already added to phonebook`);
+		}
+	};
+
+	const checkIfSaved = (name) => {
+		const res = persons.filter((person) => person.name === name);
+		return res.length > 0;
 	};
 
 	return (
