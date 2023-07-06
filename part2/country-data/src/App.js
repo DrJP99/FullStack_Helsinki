@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-const Display = ({ country, allCountries }) => {
+const Display = ({ country, allCountries, showCountry }) => {
 	const matching_names = allCountries();
 	if (country === "" || country === null) {
 		return <div>Type the name of a country</div>;
@@ -20,7 +20,15 @@ const Display = ({ country, allCountries }) => {
 			<div>
 				<ul>
 					{matching_names.map((country) => (
-						<li key={country.cioc}>{country.name.common}</li>
+						<li key={country.cioc}>
+							{country.name.common}{" "}
+							<button
+								onClick={showCountry}
+								value={country.name.common}
+							>
+								show
+							</button>
+						</li>
 					))}
 				</ul>
 			</div>
@@ -71,6 +79,10 @@ const App = () => {
 		);
 	};
 
+	const select_country = (event) => {
+		setCountry(event.target.value);
+	};
+
 	return (
 		<div>
 			<form>
@@ -82,7 +94,11 @@ const App = () => {
 					/>
 				</p>
 			</form>
-			<Display country={country} allCountries={matching_names} />
+			<Display
+				country={country}
+				allCountries={matching_names}
+				showCountry={select_country}
+			/>
 		</div>
 	);
 };
