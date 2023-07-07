@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-const Display = ({ country, allCountries, showCountry }) => {
+const Display = ({ country, allCountries, showCountry, weather }) => {
 	const matching_names = allCountries();
 	if (country === "" || country === null) {
 		return <div>Type the name of a country</div>;
@@ -20,7 +20,7 @@ const Display = ({ country, allCountries, showCountry }) => {
 			<div>
 				<ul>
 					{matching_names.map((country) => (
-						<li key={country.cioc}>
+						<li key={country.name.common}>
 							{country.name.common}{" "}
 							<button
 								onClick={showCountry}
@@ -55,6 +55,10 @@ const Display = ({ country, allCountries, showCountry }) => {
 					))}
 				</ul>
 				<img src={country.flags.png} alt={country.flag} />
+				<h2>Weather in {country.capital}</h2>
+				{/* <p>Temperature: {weather.current.temp}°C</p>
+				<p>Weather: {weather.current.weather.main}</p>
+				<p>Wind: {weather.current.weind_speed}m/s</p> */}
 			</div>
 		);
 	}
@@ -63,6 +67,7 @@ const Display = ({ country, allCountries, showCountry }) => {
 const App = () => {
 	const [country, setCountry] = useState("");
 	const [allCountries, setAllCountries] = useState([]);
+	const [weather, setWeather] = useState({});
 
 	useEffect(() => {
 		axios
@@ -72,6 +77,31 @@ const App = () => {
 				console.log("error fetching API");
 			});
 	}, []);
+
+	useEffect(() => {
+		if (matching_names().length === 1) {
+			const country = matching_names()[0];
+			const lat = country.latlng[0];
+			const lng = country.latlng[1];
+			const api_key = process.env.REACT_APP_API_KEY;
+			const excl = "minutely,hourly,daily,alerts";
+			// console.log(`${lat}; ${lng}`);
+			const url = `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lng}&exclude=${excl}&appid=${api_key}`;
+			axios
+				.get(url)
+				.then((res) => {
+					console.log(res);
+				})
+				.catch((e) => {
+					console.log(e);
+				});
+			//Make API to weather
+		} else {
+			if (weather !== {}) {
+				setWeather({});
+			}
+		}
+	}, [country]);
 
 	const matching_names = () => {
 		return allCountries.filter((c) =>
@@ -98,6 +128,7 @@ const App = () => {
 				country={country}
 				allCountries={matching_names}
 				showCountry={select_country}
+				weather={weather}
 			/>
 		</div>
 	);
