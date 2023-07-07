@@ -56,9 +56,9 @@ const Display = ({ country, allCountries, showCountry, weather }) => {
 				</ul>
 				<img src={country.flags.png} alt={country.flag} />
 				<h2>Weather in {country.capital}</h2>
-				<p>Temperature: {weather.current.temp}°C</p>
+				{/* <p>Temperature: {weather.current.temp}°C</p>
 				<p>Weather: {weather.current.weather.main}</p>
-				<p>Wind: {weather.current.weind_speed}m/s</p>
+				<p>Wind: {weather.current.weind_speed}m/s</p> */}
 			</div>
 		);
 	}
