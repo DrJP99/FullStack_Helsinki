@@ -76,19 +76,28 @@ const App = () => {
 			const newPersonObject = {
 				name: newName,
 				number: newNumber,
-				id: persons[persons.length - 1].id + 1,
 			};
 
-			personsService.create(newPersonObject).then((returnedPerson) => {
-				setPersons(persons.concat(returnedPerson));
-				setNotifType("success");
-				setNotification(`Added ${newName} to phonebook`);
-				setNewName("");
-				setNewNumber("");
-				setTimeout(() => {
-					setNotification(null);
-				}, 5000);
-			});
+			personsService
+				.create(newPersonObject)
+				.then((returnedPerson) => {
+					setPersons(persons.concat(returnedPerson));
+					setNotifType("success");
+					setNotification(`Added ${newName} to phonebook`);
+					setNewName("");
+					setNewNumber("");
+					setTimeout(() => {
+						setNotification(null);
+					}, 5000);
+				})
+				.catch((e) => {
+					setNotifType("fail");
+					setNotification(e.response.data.error);
+					setTimeout(() => {
+						setNotification(null);
+					}, 5000);
+					console.log(e.response.data.error);
+				});
 		} else {
 			if (
 				window.confirm(
@@ -114,6 +123,14 @@ const App = () => {
 						setTimeout(() => {
 							setNotification(null);
 						}, 5000);
+					})
+					.catch((e) => {
+						setNotifType("fail");
+						setNotification(e.response.data.error);
+						setTimeout(() => {
+							setNotification(null);
+						}, 5000);
+						console.log(e.response.data.error);
 					});
 			}
 		}
