@@ -1,13 +1,13 @@
 const notesRouter = require("express").Router();
 const Note = require("../models/note");
 
-app.get("/", (req, res) => {
+notesRouter.get("/", (req, res) => {
 	Note.find({}).then((notes) => {
 		res.json(notes);
 	});
 });
 
-app.get("/:id", (req, res, next) => {
+notesRouter.get("/:id", (req, res, next) => {
 	Note.findById(req.params.id)
 		.then((note) => {
 			if (note) {
@@ -21,7 +21,7 @@ app.get("/:id", (req, res, next) => {
 		});
 });
 
-app.delete("/:id", (req, res, next) => {
+notesRouter.delete("/:id", (req, res, next) => {
 	Note.findByIdAndRemove(req.params.id)
 		.then((result) => {
 			res.status(204).end();
@@ -34,7 +34,7 @@ app.delete("/:id", (req, res, next) => {
 // 	return maxId + 1;
 // };
 
-app.post("/", (req, res, next) => {
+notesRouter.post("/", (req, res, next) => {
 	const body = req.body;
 
 	// if (!body.content) {
@@ -55,7 +55,7 @@ app.post("/", (req, res, next) => {
 		.catch((e) => next(e));
 });
 
-app.put("/:id", (req, res, next) => {
+notesRouter.put("/:id", (req, res, next) => {
 	const { content, important } = req.body;
 
 	Note.findByIdAndUpdate(
