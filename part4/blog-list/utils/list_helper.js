@@ -24,8 +24,33 @@ const favoriteBlog = (blogs) => {
 	return favorite;
 };
 
+const mostBlogs = (blogs) => {
+	//returns author with most blogs
+	let authors = {};
+	let most_blogs = { author: "", blogs: 0 };
+
+	blogs.forEach((blog) => {
+		if (!(blog.author in authors)) {
+			authors[blog.author] = Number(0);
+		}
+		authors[blog.author] += 1;
+
+		if (authors[blog.author] > most_blogs.blogs) {
+			most_blogs.author = blog.author;
+			most_blogs.blogs = authors[blog.author];
+		}
+	});
+
+	return most_blogs;
+};
+
+const mostLikes = (blogs) => {
+	//returns authos with most likes in their blogs
+};
+
 module.exports = {
 	dummy,
 	totalLikes,
 	favoriteBlog,
+	mostBlogs,
 };
