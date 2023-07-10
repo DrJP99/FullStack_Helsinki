@@ -38,7 +38,7 @@ test("blogs are created correctly", async () => {
 		likes: 69,
 	};
 
-	const res = await api
+	await api
 		.post("/api/blogs")
 		.send(new_blog)
 		.expect(201)
@@ -49,6 +49,22 @@ test("blogs are created correctly", async () => {
 
 	const contents = blogsAtEnd.map((b) => b.title);
 	expect(contents).toContain("This is a new blog for testing");
+});
+
+test("blogs created without likes defined default to 0", async () => {
+	const new_blog = {
+		title: "This is a blog post wihtout likes",
+		author: "JP Dixon",
+		url: "http://www.jp-dixon/blog-test-without-likes",
+	};
+
+	const res = await api
+		.post("/api/blogs")
+		.send(new_blog)
+		.expect(201)
+		.expect("Content-Type", /application\/json/);
+
+	expect(res.body.likes).toBe(0);
 });
 
 afterAll(async () => {
