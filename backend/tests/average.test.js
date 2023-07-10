@@ -2,7 +2,7 @@ const average = require("../utils/for_testing").average;
 
 describe("average", () => {
 	test("of one value is the value itself", () => {
-		expect(avergae([1])).toBe(1);
+		expect(average([1])).toBe(1);
 	});
 });
 

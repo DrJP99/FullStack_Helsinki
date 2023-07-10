@@ -1,5 +1,6 @@
 const config = require("./utils/config");
 const express = require("express");
+require("express-async-errors");
 const app = express();
 const cors = require("cors");
 const notesRouter = require("./controllers/notes");
@@ -27,7 +28,7 @@ app.use(middleware.requestLogger);
 
 app.use("/api/notes", notesRouter);
 
-app.use(unknownEndpoint);
-app.use(errorHandler);
+app.use(middleware.unknownEndpoint);
+app.use(middleware.errorHandler);
 
 module.exports = app;
