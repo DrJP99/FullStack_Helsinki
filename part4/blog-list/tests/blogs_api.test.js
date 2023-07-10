@@ -67,6 +67,14 @@ test("blogs created without likes defined default to 0", async () => {
 	expect(res.body.likes).toBe(0);
 });
 
+test("blogs without title or url recieve a status code 400", async () => {
+	const new_blog = {
+		author: "JP Dixon",
+	};
+
+	const res = await api.post("/api/blogs").send(new_blog).expect(400);
+});
+
 afterAll(async () => {
 	await mongoose.connection.close();
 });
