@@ -30,6 +30,27 @@ test("blogs have identifier id and NOT _id", async () => {
 	expect(blogs[0].id).toBeDefined();
 });
 
+test("blogs are created correctly", async () => {
+	const new_blog = {
+		title: "This is a new blog for testing",
+		author: "JP Dixon",
+		url: "http://www.jp-dixon.com/my-new-blog",
+		likes: 69,
+	};
+
+	const res = await api
+		.post("/api/blogs")
+		.send(new_blog)
+		.expect(201)
+		.expect("Content-Type", /application\/json/);
+
+	const blogsAtEnd = await helper.blogsInDb();
+	expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1);
+
+	const contents = blogsAtEnd.map((b) => b.title);
+	expect(contents).toContain("This is a new blog for testing");
+});
+
 afterAll(async () => {
 	await mongoose.connection.close();
 });
