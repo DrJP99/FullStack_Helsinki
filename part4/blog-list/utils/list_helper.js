@@ -46,6 +46,22 @@ const mostBlogs = (blogs) => {
 
 const mostLikes = (blogs) => {
 	//returns authos with most likes in their blogs
+	let authors = {};
+	let most_likes = { author: "", likes: 0 };
+
+	blogs.forEach((blog) => {
+		if (!(blog.author in authors)) {
+			authors[blog.author] = Number(0);
+		}
+		authors[blog.author] += blog.likes;
+
+		if (authors[blog.author] > most_likes.likes) {
+			most_likes.author = blog.author;
+			most_likes.likes = authors[blog.author];
+		}
+	});
+
+	return most_likes;
 };
 
 module.exports = {
@@ -53,4 +69,5 @@ module.exports = {
 	totalLikes,
 	favoriteBlog,
 	mostBlogs,
+	mostLikes,
 };
