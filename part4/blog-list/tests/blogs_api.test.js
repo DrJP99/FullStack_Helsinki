@@ -78,3 +78,35 @@ test("blogs without title or url recieve a status code 400", async () => {
 afterAll(async () => {
 	await mongoose.connection.close();
 });
+
+test("delete a blog by id", async () => {
+	const blogsAtStart = await helper.blogsInDb();
+	const blogToDelete = blogsAtStart[0];
+
+	await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
+
+	const blogsAtEnd = await helper.blogsInDb();
+	expect(blogsAtEnd).toHaveLength(blogsAtStart.length - 1);
+
+	const titles = blogsAtEnd.map((blog) => blog.title);
+	expect(titles).not.toContain(blogToDelete.title);
+});
+
+test("update a blog by id", async () => {
+	const blogsAtStart = await helper.blogsInDb();
+	const blogToUpdate = blogsAtStart[0];
+
+	const upadtedBlog = {
+		title: blogToUpdate.title,
+		author: blogToUpdate.author,
+		url: blogToUpdate.url,
+		likes: blogToUpdate.likes + 1,
+	};
+
+	const res = await api
+		.put(`/api/blogs/${blogToUpdate.id}`)
+		.send(upadtedBlog)
+		.expect(200);
+
+	expect(res.body.likes).toBe(blogToUpdate.likes + 1);
+});
