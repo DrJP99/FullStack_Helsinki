@@ -1,6 +1,8 @@
 POST http://localhost:3001/api/notes
 Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImRyanA5OSIsImlkIjoiNjRhYzlkODJlNWUwOWIxNmFlMTFmZjk2IiwiaWF0IjoxNjg5MDM3NDU2fQ.2FIyDXHjLQs7vR_Gf-JCw7Z_IXOavH5yvQlmT2y3rw8
 
 {
-    "important": false
+    "content": "This is a new secret note made by jp",
+    "important": true
 }
