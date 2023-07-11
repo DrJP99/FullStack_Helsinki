@@ -50,10 +50,10 @@ blogsRouter.delete('/:id', async (req, res, next) => {
 })
 
 blogsRouter.put('/:id', async (req, res, next) => {
-	const { title, author, url, likes } = req.body
+	const { title, author, url, likes, user } = req.body
 	// const user = req.user;
 
-	const old_blog = await Blog.findById(req.params.id)
+	// const old_blog = await Blog.findById(req.params.id)
 
 	// if (user._id.toString() !== old_blog.user.toString()) {
 	// 	return res.status(401).json({ error: "invalid token" });
@@ -61,9 +61,14 @@ blogsRouter.put('/:id', async (req, res, next) => {
 
 	const updatedBlog = await Blog.findByIdAndUpdate(
 		req.params.id,
-		{ title, author, url, likes },
+		{ title, author, url, likes, user },
 		{ new: true, runValidators: 'query' }
 	)
+
+	await updatedBlog.populate('user', {
+		username: 1,
+		name: 1,
+	})
 
 	res.json(updatedBlog)
 })

@@ -129,6 +129,30 @@ const App = () => {
 		}
 	}
 
+	const handleLike = async (blog) => {
+		try {
+			const updated_blog = {
+				...blog,
+				likes: blog.likes + 1,
+				user: blog.user.id,
+			}
+
+			const returnedObject = await blogService.update(updated_blog)
+			console.log(returnedObject)
+			setBlogs(
+				blogs.map((b) =>
+					b.id === returnedObject.id ? returnedObject : b
+				)
+			)
+		} catch (e) {
+			console.error(e.message)
+			setMessage('Error creating new blog')
+			setTimeout(() => {
+				setMessage(null)
+			}, 5000)
+		}
+	}
+
 	const Notification = ({ message }) => {
 		if (message === null) {
 			return null
@@ -165,7 +189,7 @@ const App = () => {
 					{createNewForm()}
 				</div>
 			)}
-			<Blogs blogs={blogs} />
+			<Blogs blogs={blogs} handleLike={handleLike} />
 		</div>
 	)
 }
