@@ -19,8 +19,16 @@ const App = () => {
 
 	const [message, setMessage] = useState(null)
 
+	const sort_blogs = (blogs) => {
+		blogs.sort((a, b) => {
+			return b.likes - a.likes
+		})
+
+		return blogs
+	}
+
 	useEffect(() => {
-		blogService.getAll().then((blogs) => setBlogs(blogs))
+		blogService.getAll().then((blogs) => setBlogs(sort_blogs(blogs)))
 	}, [])
 
 	useEffect(() => {
@@ -138,12 +146,12 @@ const App = () => {
 			}
 
 			const returnedObject = await blogService.update(updated_blog)
-			console.log(returnedObject)
-			setBlogs(
-				blogs.map((b) =>
-					b.id === returnedObject.id ? returnedObject : b
-				)
+
+			let copy_array = blogs.map((b) =>
+				b.id === returnedObject.id ? returnedObject : b
 			)
+			copy_array = sort_blogs(copy_array)
+			setBlogs(copy_array)
 		} catch (e) {
 			console.error(e.message)
 			setMessage('Error creating new blog')
