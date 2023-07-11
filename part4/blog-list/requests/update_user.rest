@@ -1,0 +1,8 @@
+PUT http://localhost:3003/api/users/64acba5f40ffeecf04a1a64a
+Content-Type: application/json
+
+{
+    "username": "root",
+    "name": "Superuser",
+    "password": "admin123"
+}

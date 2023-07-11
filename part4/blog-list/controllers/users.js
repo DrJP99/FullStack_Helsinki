@@ -34,4 +34,28 @@ usersRouter.post("/", async (req, res) => {
 	res.status(201).json(savedUser);
 });
 
+usersRouter.put("/:id", async (req, res) => {
+	const { username, name, password } = req.body;
+
+	if (!password || password.length < 3) {
+		res.status(400).json({
+			error: "password must be at least 3 characters long",
+		});
+	}
+
+	const saltRounds = 10;
+	const passwordHash = await bcrypt.hash(password, saltRounds);
+
+	const updatedUser = await User.findByIdAndUpdate(
+		req.params.id,
+		{
+			username,
+			name,
+			passwordHash,
+		},
+		{ new: true, runValidators: "query" }
+	);
+	res.json(updatedUser);
+});
+
 module.exports = usersRouter;
