@@ -41,12 +41,16 @@ const initialUsers = [
 	{
 		username: "root",
 		name: "Superuser",
-		password: "abc123",
+		passwordHash:
+			"$2b$10$EarV6.rIjiWTn1y0iYIE7ecxzj/BnnAY8pdBjYXZQUY/XI0eDpYtu",
+		// password: "abc123",
 	},
 	{
 		username: "marx83",
 		name: "Karl Marx",
-		password: "pr0l3t4r14t_L0v3r",
+		passwordHash:
+			"$2b$10$selKEXayf0StT.Dut0/ZCOa5GEDjHPbdKuq481F92s8lUtiqHtwjy",
+		// password: "pr0l3t4r14t_L0v3r",
 	},
 ];
 

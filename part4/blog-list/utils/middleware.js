@@ -42,24 +42,28 @@ const tokenExtractor = (req, res, next) => {
 		req.token = authorization.replace("Bearer ", "");
 	} else if (authorization && authorization.startsWith("bearer ")) {
 		req.token = authorization.replace("bearer ", "");
+	} else if (authorization) {
+		req.token = authorization;
 	}
 
 	next();
 };
 
 const userExtractor = async (req, res, next) => {
-	const decodedToken = jwt.verify(req.token, process.env.SECRET);
+	if (req.token) {
+		const decodedToken = jwt.verify(req.token, process.env.SECRET);
 
-	if (!decodedToken.id) {
-		res.status(401).json({ error: "invalid token" });
+		if (!decodedToken.id) {
+			res.status(401).json({ error: "invalid token" });
+		}
+
+		const user = await User.findById(decodedToken.id);
+
+		if (!user) {
+			res.status(404).json({ error: "user not found" }).end();
+		}
+		req.user = user;
 	}
-
-	const user = await User.findById(decodedToken.id);
-
-	if (!user) {
-		res.status(404).json({ error: "user not found" }).end();
-	}
-	req.user = user;
 
 	next();
 };

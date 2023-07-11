@@ -8,17 +8,21 @@ const User = require("../models/user");
 const api = supertest(app);
 
 beforeEach(async () => {
-	await Blog.deleteMany({});
-
-	const blogObjects = helper.initialBlogs.map((blog) => new Blog(blog));
-	const promiseArray = blogObjects.map((blog) => blog.save());
-	await Promise.all(promiseArray);
-
 	await User.deleteMany({});
 
 	const userObjects = helper.initialUsers.map((u) => new User(u));
+	const root_id = userObjects[0]._id;
 	const promiseUsers = userObjects.map((u) => u.save());
 	await Promise.all(promiseUsers);
+
+	await Blog.deleteMany({});
+
+	const blogObjects = helper.initialBlogs.map((blog) => {
+		blog.user = root_id;
+		return new Blog(blog);
+	});
+	const promiseArray = blogObjects.map((blog) => blog.save());
+	await Promise.all(promiseArray);
 });
 
 describe("get JSON", () => {
@@ -41,6 +45,13 @@ describe("get JSON", () => {
 
 describe("blog creation", () => {
 	test("blogs are created correctly", async () => {
+		const login = await api
+			.post("/api/login")
+			.send({ username: "root", password: "abc123" });
+
+		// console.log(login);
+		const root_token = login.body.token;
+
 		const new_blog = {
 			title: "This is a new blog for testing",
 			author: "JP Dixon",
@@ -51,6 +62,7 @@ describe("blog creation", () => {
 		await api
 			.post("/api/blogs")
 			.send(new_blog)
+			.set("Authorization", root_token)
 			.expect(201)
 			.expect("Content-Type", /application\/json/);
 
@@ -62,6 +74,13 @@ describe("blog creation", () => {
 	});
 
 	test("blogs created without likes defined default to 0", async () => {
+		const login = await api
+			.post("/api/login")
+			.send({ username: "root", password: "abc123" });
+
+		// console.log(login);
+		const root_token = login.body.token;
+
 		const new_blog = {
 			title: "This is a blog post wihtout likes",
 			author: "JP Dixon",
@@ -71,6 +90,7 @@ describe("blog creation", () => {
 		const res = await api
 			.post("/api/blogs")
 			.send(new_blog)
+			.set("Authorization", root_token)
 			.expect(201)
 			.expect("Content-Type", /application\/json/);
 
@@ -78,20 +98,56 @@ describe("blog creation", () => {
 	});
 
 	test("blogs without title or url recieve a status code 400", async () => {
+		const login = await api
+			.post("/api/login")
+			.send({ username: "root", password: "abc123" });
+
+		// console.log(login);
+		const root_token = login.body.token;
+
 		const new_blog = {
 			author: "JP Dixon",
 		};
 
-		const res = await api.post("/api/blogs").send(new_blog).expect(400);
+		const res = await api
+			.post("/api/blogs")
+			.send(new_blog)
+			.set("Authorization", root_token)
+			.expect(400);
+	});
+
+	test("create a blog without validation token fails with status code 401", async () => {
+		const new_blog = {
+			title: "This is a new blog for testing",
+			author: "JP Dixon",
+			url: "http://www.jp-dixon.com/my-new-blog",
+			likes: 69,
+		};
+
+		await api
+			.post("/api/blogs")
+			.send(new_blog)
+			.expect(401)
+			.expect("Content-Type", /application\/json/);
 	});
 });
 
 describe("delete blog", () => {
 	test("delete a blog by id", async () => {
+		const login = await api
+			.post("/api/login")
+			.send({ username: "root", password: "abc123" });
+
+		// console.log(login);
+		const root_token = login.body.token;
+
 		const blogsAtStart = await helper.blogsInDb();
 		const blogToDelete = blogsAtStart[0];
 
-		await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
+		await api
+			.delete(`/api/blogs/${blogToDelete.id}`)
+			.set("Authorization", root_token)
+			.expect(204);
 
 		const blogsAtEnd = await helper.blogsInDb();
 		expect(blogsAtEnd).toHaveLength(blogsAtStart.length - 1);
