@@ -3,16 +3,6 @@ const jwt = require("jsonwebtoken");
 const Blog = require("../models/blog");
 const User = require("../models/user");
 
-const getTokenFrom = (req) => {
-	const authorization = req.get("authorization");
-	if (authorization && authorization.startsWith("Bearer ")) {
-		return authorization.replace("Bearer ", "");
-	} else if (authorization && authorization.startsWith("bearer ")) {
-		return authorization.replace("bearer ", "");
-	}
-	return null;
-};
-
 blogsRouter.get("/", async (req, res, next) => {
 	const blogs = await Blog.find({}).populate("user", {
 		username: 1,
@@ -23,7 +13,7 @@ blogsRouter.get("/", async (req, res, next) => {
 
 blogsRouter.post("/", async (req, res, next) => {
 	const { title, author, url, likes } = req.body;
-	const decodedToken = jwt.verify(getTokenFrom(req), process.env.SECRET);
+	const decodedToken = jwt.verify(req.token, process.env.SECRET);
 
 	if (!decodedToken.id) {
 		return res.status(401).json({ error: "invalid token" });
@@ -53,7 +43,7 @@ blogsRouter.delete("/:id", async (req, res, next) => {
 
 blogsRouter.put("/:id", async (req, res, next) => {
 	const { title, author, url, likes } = req.body;
-	const decodedToken = jwt.verify(getTokenFrom(req), process.env.SECRET);
+	const decodedToken = jwt.verify(req.token, process.env.SECRET);
 
 	const old_blog = await Blog.findById(req.params.id);
 

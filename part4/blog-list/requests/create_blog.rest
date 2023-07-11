@@ -3,7 +3,7 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjY0YWNiYTVmNDBmZmVlY2YwNGExYTY0YSIsImlhdCI6MTY4OTA0NTE1MSwiZXhwIjoxNjg5MDQ4NzUxfQ.jwNAO8_UElXv-OdK_sqXiZwC9B8PVE1E-YrL3jhtkdU
 
 {
-    "title": "New blog with authorization by root!",
+    "title": "My newest blog!",
     "author": "JP Dixon",
     "url": "some.url.com/token",
     "likes": 1

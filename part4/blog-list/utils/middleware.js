@@ -34,6 +34,17 @@ morgan.token("statusColor", (req, res, args) => {
 	return "\x1b[" + color + "m" + status + "\x1b[0m";
 });
 
+const tokenExtractor = (req, res, next) => {
+	const authorization = req.get("authorization");
+	if (authorization && authorization.startsWith("Bearer ")) {
+		req.token = authorization.replace("Bearer ", "");
+	} else if (authorization && authorization.startsWith("bearer ")) {
+		req.token = authorization.replace("bearer ", "");
+	}
+
+	next();
+};
+
 const requestLogger = morgan(
 	`:splitter\x1b[33m:method\x1b[0m \x1b[36m:url\x1b[0m :statusColor :response-time ms - length|:res[content-length] :body`
 );
@@ -58,4 +69,9 @@ const errorHandler = (error, req, res, next) => {
 	next(error);
 };
 
-module.exports = { requestLogger, unknownEndpoint, errorHandler };
+module.exports = {
+	tokenExtractor,
+	requestLogger,
+	unknownEndpoint,
+	errorHandler,
+};
