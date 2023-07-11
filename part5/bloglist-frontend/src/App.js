@@ -1,177 +1,144 @@
-import { useState, useEffect } from "react";
-import Blog from "./components/Blog";
-import blogService from "./services/blogs";
-import loginService from "./services/login";
+import { useState, useEffect, useRef } from 'react'
+import Blog from './components/Blog'
+import blogService from './services/blogs'
+import loginService from './services/login'
+import BlogForm from './components/BlogForm'
+import Togglable from './components/Togglable'
 
 const App = () => {
-	const [blogs, setBlogs] = useState([]);
-	const [username, setUsername] = useState("");
-	const [password, setPassword] = useState("");
-	const [user, setUser] = useState(null);
+	const [blogs, setBlogs] = useState([])
+	const [username, setUsername] = useState('')
+	const [password, setPassword] = useState('')
+	const [user, setUser] = useState(null)
 
 	//new blog form
-	const [title, setTitle] = useState("");
-	const [author, setAuthor] = useState("");
-	const [url, setUrl] = useState("");
+	const [title, setTitle] = useState('')
+	const [author, setAuthor] = useState('')
+	const [url, setUrl] = useState('')
 
-	const [message, setMessage] = useState(null);
-
-	useEffect(() => {
-		blogService.getAll().then((blogs) => setBlogs(blogs));
-	}, []);
+	const [message, setMessage] = useState(null)
 
 	useEffect(() => {
-		const loggedUserJSON = window.localStorage.getItem("loggedBlogAppUser");
+		blogService.getAll().then((blogs) => setBlogs(blogs))
+	}, [])
+
+	useEffect(() => {
+		const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
 		if (loggedUserJSON) {
-			const user = JSON.parse(loggedUserJSON);
-			setUser(user);
-			blogService.setToken(user.token);
+			const user = JSON.parse(loggedUserJSON)
+			setUser(user)
+			blogService.setToken(user.token)
 		}
-	}, []);
+	}, [])
 
 	const handleLogout = (e) => {
-		e.preventDefault();
+		e.preventDefault()
 
-		console.log("logging out...");
-		blogService.setToken(null);
-		window.localStorage.removeItem("loggedBlogAppUser");
-		setUser(null);
-		setUsername("");
-		setPassword("");
-	};
+		console.log('logging out...')
+		blogService.setToken(null)
+		window.localStorage.removeItem('loggedBlogAppUser')
+		setUser(null)
+		setUsername('')
+		setPassword('')
+	}
 
 	const handleLogin = async (e) => {
-		e.preventDefault();
-		console.log("logging in with", username, password);
+		e.preventDefault()
+		console.log('logging in with', username, password)
 
 		try {
-			const user = await loginService.login({ username, password });
+			const user = await loginService.login({ username, password })
 
 			window.localStorage.setItem(
-				"loggedBlogAppUser",
+				'loggedBlogAppUser',
 				JSON.stringify(user)
-			);
-			setUser(user);
-			blogService.setToken(user.token);
-			setMessage(`${user.name} was logged in`);
+			)
+			setUser(user)
+			blogService.setToken(user.token)
+			setMessage(`${user.name} was logged in`)
 			setTimeout(() => {
-				setMessage(null);
-			}, 5000);
-			setUsername("");
-			setPassword("");
+				setMessage(null)
+			}, 5000)
+			setUsername('')
+			setPassword('')
 		} catch (e) {
-			setMessage(`Error loggin in: username or password incorrect`);
+			setMessage(`Error loggin in: username or password incorrect`)
 			setTimeout(() => {
-				setUser(null);
-			}, 5000);
-			console.error(e);
+				setUser(null)
+			}, 5000)
+			console.error(e)
 		}
-	};
+	}
 
 	const loginForm = () => (
 		<div>
 			<h2>Login</h2>
 			<form onSubmit={handleLogin}>
 				<div>
-					username:{" "}
+					username:{' '}
 					<input
-						type="text"
+						type='text'
 						value={username}
-						name="Username"
+						name='Username'
 						onChange={({ target }) => {
-							console.log(target.value);
-							setUsername(target.value);
+							console.log(target.value)
+							setUsername(target.value)
 						}}
 					/>
 				</div>
 				<div>
-					password:{" "}
+					password:{' '}
 					<input
-						type="password"
+						type='password'
 						value={password}
-						name="Password"
+						name='Password'
 						onChange={({ target }) => setPassword(target.value)}
 					/>
 				</div>
-				<button type="submit">login</button>
+				<button type='submit'>login</button>
 			</form>
 		</div>
-	);
+	)
 
-	const handleNewBlog = async (e) => {
-		e.preventDefault();
+	const newBlogRef = useRef()
+	const createNewForm = () => (
+		<Togglable buttonLabel='new' ref={newBlogRef}>
+			<BlogForm addBlog={handleNewBlog} />
+		</Togglable>
+	)
 
-		const new_blog = { title, author, url };
-
+	const handleNewBlog = async (new_blog) => {
 		try {
-			const res = await blogService.create(new_blog);
-			setBlogs(blogs.concat(res));
+			const res = await blogService.create(new_blog)
+			setBlogs(blogs.concat(res))
 
 			setMessage(
 				`a new blog ${title} by ${author} was successfully added!`
-			);
+			)
+			newBlogRef.current.toggleVisibility()
 			setTimeout(() => {
-				setMessage(null);
-			}, 5000);
-
-			setTitle("");
-			setAuthor("");
-			setUrl("");
+				setMessage(null)
+			}, 5000)
 		} catch (e) {
-			console.error(e.message);
-			setMessage("Error creating new blog");
+			console.error(e.message)
+			setMessage('Error creating new blog')
 			setTimeout(() => {
-				setMessage(null);
-			}, 5000);
+				setMessage(null)
+			}, 5000)
 		}
-	};
-
-	const createNewForm = () => (
-		<div>
-			<form onSubmit={handleNewBlog}>
-				<div>
-					title:{" "}
-					<input
-						type="text"
-						value={title}
-						nmae="Title"
-						onChange={({ target }) => setTitle(target.value)}
-					/>
-				</div>
-				<div>
-					author:{" "}
-					<input
-						type="text"
-						value={author}
-						nmae="Author"
-						onChange={({ target }) => setAuthor(target.value)}
-					/>
-				</div>
-				<div>
-					url:{" "}
-					<input
-						type="text"
-						value={url}
-						nmae="URL"
-						onChange={({ target }) => setUrl(target.value)}
-					/>
-				</div>
-				<button type="submit">create</button>
-			</form>
-		</div>
-	);
+	}
 
 	const Notification = ({ message }) => {
 		if (message === null) {
-			return null;
+			return null
 		}
 
 		return (
 			<div
 				style={{
-					background: "lightgrey",
+					background: 'lightgrey',
 					fontSize: 20,
-					borderStyle: "solid",
+					borderStyle: 'solid',
 					borderRadius: 5,
 					padding: 10,
 					marginBottom: 10,
@@ -179,8 +146,8 @@ const App = () => {
 			>
 				{message}
 			</div>
-		);
-	};
+		)
+	}
 
 	return (
 		<div>
@@ -191,7 +158,7 @@ const App = () => {
 			) : (
 				<div>
 					<p>
-						{user.name} logged in{" "}
+						{user.name} logged in{' '}
 						<button onClick={handleLogout}>logout</button>
 					</p>
 					{createNewForm()}
@@ -201,7 +168,7 @@ const App = () => {
 				<Blog key={blog.id} blog={blog} />
 			))}
 		</div>
-	);
-};
+	)
+}
 
-export default App;
+export default App
