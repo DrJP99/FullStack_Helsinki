@@ -1,5 +1,6 @@
 const { model } = require("mongoose");
 const Blog = require("../models/blog");
+const User = require("../models/user");
 
 const initialBlogs = [
 	{
@@ -36,6 +37,19 @@ const initialBlogs = [
 	},
 ];
 
+const initialUsers = [
+	{
+		username: "root",
+		name: "Superuser",
+		password: "abc123",
+	},
+	{
+		username: "marx83",
+		name: "Karl Marx",
+		password: "pr0l3t4r14t_L0v3r",
+	},
+];
+
 const nonExistingId = async () => {
 	const blog = new Blog({
 		title: "sometitle",
@@ -54,8 +68,15 @@ const blogsInDb = async () => {
 	return blogs.map((blog) => blog.toJSON());
 };
 
+const usersInDb = async () => {
+	const users = await User.find({});
+	return users.map((u) => u.toJSON());
+};
+
 module.exports = {
 	initialBlogs,
 	nonExistingId,
 	blogsInDb,
+	initialUsers,
+	usersInDb,
 };
