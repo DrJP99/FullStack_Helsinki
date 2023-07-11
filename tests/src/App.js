@@ -4,6 +4,9 @@ import Note from "./components/Note";
 import noteService from "./services/notes";
 import loginService from "./services/login";
 import Notification from "./components/Notification";
+import LoginForm from "./components/LoginForm";
+import NoteForm from "./components/NoteForm";
+import Togglable from "./components/Togglable";
 
 const App = () => {
 	// const { notes } = props;
@@ -11,6 +14,8 @@ const App = () => {
 	const [newNote, setNewNote] = useState("a new note...");
 	const [showAll, setShowAll] = useState(true);
 	const [errorMessage, setErrorMessage] = useState(null);
+
+	const [loginVisible, setLoginVisible] = useState(false);
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 	const [user, setUser] = useState(null);
@@ -90,6 +95,7 @@ const App = () => {
 			setUser(user);
 			setUsername("");
 			setPassword("");
+			setLoginVisible(false);
 		} catch (e) {
 			setErrorMessage("Wrong credentials");
 			setTimeout(() => {
@@ -98,45 +104,32 @@ const App = () => {
 		}
 	};
 
+	const loginForm = () => (
+		<Togglable buttonLabel="login">
+			<LoginForm
+				username={username}
+				password={password}
+				handleUsernameChange={({ target }) => setUsername(target.value)}
+				handlePasswordChange={({ target }) => setPassword(target.value)}
+				handlesubmit={handleLogin}
+			/>
+		</Togglable>
+	);
+
 	const handleLogout = () => {
 		setUser(null);
 		noteService.setToken(null);
 		window.localStorage.removeItem("loggedNoteAppUser");
 	};
 
-	const loginForm = () => (
-		<form onSubmit={handleLogin}>
-			<div>
-				username{" "}
-				<input
-					type="text"
-					value={username}
-					name="Username"
-					onChange={(e) => {
-						setUsername(e.target.value);
-					}}
-				/>
-			</div>
-			<div>
-				password{" "}
-				<input
-					type="password"
-					value={password}
-					name="Password"
-					onChange={(e) => {
-						setPassword(e.target.value);
-					}}
-				/>
-			</div>
-			<button type="submit">login</button>
-		</form>
-	);
-
 	const noteForm = () => (
-		<form onSubmit={addNote}>
-			<input value={newNote} onChange={handleNoteChange} />
-			<button type="submit">save</button>
-		</form>
+		<Togglable buttonLabel="new note">
+			<NoteForm
+				onSubmit={addNote}
+				value={newNote}
+				handleChange={handleNoteChange}
+			/>
+		</Togglable>
 	);
 
 	const Footer = () => {
