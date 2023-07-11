@@ -4,6 +4,7 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
+import Blogs from './components/Blogs'
 
 const App = () => {
 	const [blogs, setBlogs] = useState([])
@@ -164,9 +165,7 @@ const App = () => {
 					{createNewForm()}
 				</div>
 			)}
-			{blogs.map((blog) => (
-				<Blog key={blog.id} blog={blog} />
-			))}
+			<Blogs blogs={blogs} />
 		</div>
 	)
 }
