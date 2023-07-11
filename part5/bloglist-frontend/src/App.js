@@ -14,6 +14,8 @@ const App = () => {
 	const [author, setAuthor] = useState("");
 	const [url, setUrl] = useState("");
 
+	const [message, setMessage] = useState(null);
+
 	useEffect(() => {
 		blogService.getAll().then((blogs) => setBlogs(blogs));
 	}, []);
@@ -51,9 +53,17 @@ const App = () => {
 			);
 			setUser(user);
 			blogService.setToken(user.token);
+			setMessage(`${user.name} was logged in`);
+			setTimeout(() => {
+				setMessage(null);
+			}, 5000);
 			setUsername("");
 			setPassword("");
 		} catch (e) {
+			setMessage(`Error loggin in: username or password incorrect`);
+			setTimeout(() => {
+				setUser(null);
+			}, 5000);
 			console.error(e);
 		}
 	};
@@ -93,12 +103,27 @@ const App = () => {
 
 		const new_blog = { title, author, url };
 
-		const res = await blogService.create(new_blog);
-		setBlogs(blogs.concat(res));
+		try {
+			const res = await blogService.create(new_blog);
+			setBlogs(blogs.concat(res));
 
-		setTitle("");
-		setAuthor("");
-		setUrl("");
+			setMessage(
+				`a new blog ${title} by ${author} was successfully added!`
+			);
+			setTimeout(() => {
+				setMessage(null);
+			}, 5000);
+
+			setTitle("");
+			setAuthor("");
+			setUrl("");
+		} catch (e) {
+			console.error(e.message);
+			setMessage("Error creating new blog");
+			setTimeout(() => {
+				setMessage(null);
+			}, 5000);
+		}
 	};
 
 	const createNewForm = () => (
@@ -136,9 +161,31 @@ const App = () => {
 		</div>
 	);
 
+	const Notification = ({ message }) => {
+		if (message === null) {
+			return null;
+		}
+
+		return (
+			<div
+				style={{
+					background: "lightgrey",
+					fontSize: 20,
+					borderStyle: "solid",
+					borderRadius: 5,
+					padding: 10,
+					marginBottom: 10,
+				}}
+			>
+				{message}
+			</div>
+		);
+	};
+
 	return (
 		<div>
 			<h2>blogs</h2>
+			<Notification message={message} />
 			{!user ? (
 				loginForm()
 			) : (
