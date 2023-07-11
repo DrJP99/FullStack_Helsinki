@@ -6,5 +6,5 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb
     "title": "Modified blog post~!",
     "author": "JP Dixon",
     "url": "http://www.jp-dixon.com/blog",
-    "likes": "5"
+    "likes": 7
 }
