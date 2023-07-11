@@ -13,13 +13,8 @@ blogsRouter.get("/", async (req, res, next) => {
 
 blogsRouter.post("/", async (req, res, next) => {
 	const { title, author, url, likes } = req.body;
-	const decodedToken = jwt.verify(req.token, process.env.SECRET);
 
-	if (!decodedToken.id) {
-		return res.status(401).json({ error: "invalid token" });
-	}
-
-	const user = await User.findById(decodedToken.id);
+	const user = req.user;
 
 	const blog = new Blog({
 		title: title,
@@ -37,11 +32,11 @@ blogsRouter.post("/", async (req, res, next) => {
 });
 
 blogsRouter.delete("/:id", async (req, res, next) => {
-	const decodedToken = jwt.verify(req.token, process.env.SECRET);
+	const user = req.user;
 
 	const old_blog = await Blog.findById(req.params.id);
 
-	if (!decodedToken.id || decodedToken.id !== old_blog.user.toString()) {
+	if (user._id.toString() !== old_blog.user.toString()) {
 		return res.status(401).json({ error: "invalid token" });
 	}
 
@@ -51,11 +46,11 @@ blogsRouter.delete("/:id", async (req, res, next) => {
 
 blogsRouter.put("/:id", async (req, res, next) => {
 	const { title, author, url, likes } = req.body;
-	const decodedToken = jwt.verify(req.token, process.env.SECRET);
+	const user = req.user;
 
 	const old_blog = await Blog.findById(req.params.id);
 
-	if (!decodedToken.id || decodedToken.id !== old_blog.user.toString()) {
+	if (user._id.toString() !== old_blog.user.toString()) {
 		return res.status(401).json({ error: "invalid token" });
 	}
 
@@ -64,7 +59,7 @@ blogsRouter.put("/:id", async (req, res, next) => {
 		{ title, author, url, likes },
 		{ new: true, runValidators: "query" }
 	);
-	console.log(updatedBlog);
+
 	res.json(updatedBlog);
 });
 
