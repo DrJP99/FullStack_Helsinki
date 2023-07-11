@@ -1,20 +1,35 @@
 const blogsRouter = require("express").Router();
+const jwt = require("jsonwebtoken");
 const Blog = require("../models/blog");
 const User = require("../models/user");
 
-blogsRouter.get("/", async (request, response, next) => {
+const getTokenFrom = (req) => {
+	const authorization = req.get("authorization");
+	if (authorization && authorization.startsWith("Bearer ")) {
+		return authorization.replace("Bearer ", "");
+	} else if (authorization && authorization.startsWith("bearer ")) {
+		return authorization.replace("bearer ", "");
+	}
+	return null;
+};
+
+blogsRouter.get("/", async (req, res, next) => {
 	const blogs = await Blog.find({}).populate("user", {
 		username: 1,
 		name: 1,
 	});
-	response.json(blogs);
+	res.json(blogs);
 });
 
-blogsRouter.post("/", async (request, response, next) => {
-	const { title, author, url, likes } = request.body;
+blogsRouter.post("/", async (req, res, next) => {
+	const { title, author, url, likes } = req.body;
+	const decodedToken = jwt.verify(getTokenFrom(req), process.env.SECRET);
 
-	const users = await User.find({});
-	const user = users[0];
+	if (!decodedToken.id) {
+		return res.status(401).json({ error: "invalid token" });
+	}
+
+	const user = await User.findById(decodedToken.id);
 
 	const blog = new Blog({
 		title: title,
@@ -28,7 +43,7 @@ blogsRouter.post("/", async (request, response, next) => {
 	user.blogs = user.blogs.concat(savedBlog._id);
 	await user.save();
 
-	response.status(201).json(savedBlog);
+	res.status(201).json(savedBlog);
 });
 
 blogsRouter.delete("/:id", async (req, res, next) => {
@@ -38,12 +53,20 @@ blogsRouter.delete("/:id", async (req, res, next) => {
 
 blogsRouter.put("/:id", async (req, res, next) => {
 	const { title, author, url, likes } = req.body;
+	const decodedToken = jwt.verify(getTokenFrom(req), process.env.SECRET);
+
+	const old_blog = await Blog.findById(req.params.id);
+
+	if (!decodedToken.id || decodedToken.id !== old_blog.user.toString()) {
+		return res.status(401).json({ error: "invalid token" });
+	}
 
 	const updatedBlog = await Blog.findByIdAndUpdate(
 		req.params.id,
 		{ title, author, url, likes },
 		{ new: true, runValidators: "query" }
 	);
+	console.log(updatedBlog);
 	res.json(updatedBlog);
 });
 
