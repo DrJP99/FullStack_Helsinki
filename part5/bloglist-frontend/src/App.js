@@ -161,6 +161,21 @@ const App = () => {
 		}
 	}
 
+	const handleDelete = async (blog) => {
+		if (
+			window.confirm(
+				`Do you want to delete ${blog.title} by ${blog.author}?`
+			)
+		) {
+			try {
+				await blogService.del(blog)
+				setBlogs(blogs.filter((b) => b.id !== blog.id))
+			} catch (e) {
+				console.log(e.message)
+			}
+		}
+	}
+
 	const Notification = ({ message }) => {
 		if (message === null) {
 			return null
@@ -197,7 +212,11 @@ const App = () => {
 					{createNewForm()}
 				</div>
 			)}
-			<Blogs blogs={blogs} handleLike={handleLike} />
+			<Blogs
+				blogs={blogs}
+				handleLike={handleLike}
+				handleDelete={handleDelete}
+			/>
 		</div>
 	)
 }
