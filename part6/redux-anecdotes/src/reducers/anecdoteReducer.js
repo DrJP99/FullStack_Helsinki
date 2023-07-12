@@ -35,7 +35,10 @@ const reducer = (state = initialState, action) => {
 				votes: anecdoteToUpdate.votes + 1,
 			}
 
-			return state.map((a) => (a.id !== id ? a : changedAnecdote))
+			const copy = state.map((a) => (a.id !== id ? a : changedAnecdote))
+			return copy.sort((a, b) => {
+				return b.votes - a.votes
+			})
 		}
 	}
 
