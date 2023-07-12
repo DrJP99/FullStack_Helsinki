@@ -1,6 +1,6 @@
 import ReactDOM from 'react-dom/client'
 import './index.css'
-import { createStore, combineReducers } from 'redux'
+import { configureStore } from '@reduxjs/toolkit'
 import { Provider } from 'react-redux'
 
 import App from './App-redux'
@@ -9,12 +9,12 @@ import filterReducer, { filterChange } from './reducers/filterReducer'
 
 import { createNote } from './reducers/noteReducer'
 
-const reducer = combineReducers({
-	notes: noteReducer,
-	filter: filterReducer,
+const store = configureStore({
+	reducer: {
+		notes: noteReducer,
+		filter: filterReducer,
+	},
 })
-
-const store = createStore(reducer)
 
 const root = ReactDOM.createRoot(document.getElementById('root'))
 root.render(

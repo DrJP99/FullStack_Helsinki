@@ -6,10 +6,6 @@ import Notes from './components/Note_redux'
 import VisibilityForm from './components/VisibilityFilter'
 
 const App = () => {
-	const filterSelected = (value) => {
-		console.log(value)
-	}
-
 	return (
 		<div>
 			<NewNote />
