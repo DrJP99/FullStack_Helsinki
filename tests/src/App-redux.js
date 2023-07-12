@@ -1,16 +1,14 @@
-import store from './reducers/noteReducer'
+import { createNote, toggleImportance } from './reducers/noteReducer'
+import { useSelector, useDispatch } from 'react-redux'
+
+import NewNote from './components/NewNote'
+import Notes from './components/Note_redux'
 
 const App = () => {
 	return (
 		<div>
-			<ul>
-				{store.getState().map((note) => (
-					<li key={note.id}>
-						{note.content}{' '}
-						<strong>{note.importante ? 'important' : ''}</strong>
-					</li>
-				))}
-			</ul>
+			<NewNote />
+			<Notes />
 		</div>
 	)
 }
