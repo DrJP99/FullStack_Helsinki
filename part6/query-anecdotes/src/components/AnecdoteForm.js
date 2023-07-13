@@ -16,6 +16,12 @@ const AnecdoteForm = () => {
 				payload: `Created new note '${newAnecdote.content}'`,
 			})
 		},
+		onError: (error) => {
+			dispatch({
+				type: 'SET_NOTIF',
+				payload: `${error.response.data.error}`,
+			})
+		},
 	})
 	const onCreate = async (event) => {
 		event.preventDefault()
