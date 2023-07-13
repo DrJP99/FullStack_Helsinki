@@ -3,7 +3,6 @@ import { createContext, useReducer } from 'react'
 const notificationReducer = (state, action) => {
 	switch (action.type) {
 		case 'SET_NOTIF':
-			console.log(action)
 			return action.payload
 		case 'DELETE_NOTIF':
 			return null
