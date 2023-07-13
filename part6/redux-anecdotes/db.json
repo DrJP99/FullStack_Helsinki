@@ -34,6 +34,11 @@
       "content": "my new note!",
       "id": "99331",
       "votes": 0
+    },
+    {
+      "content": "empty",
+      "id": "25452",
+      "votes": 0
     }
   ]
 }

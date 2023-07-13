@@ -9,7 +9,7 @@ const getId = () => (100000 * Math.random()).toFixed(0)
 
 const createAnecdote = async (content) => {
 	const newAnecdote = {
-		content,
+		content: content || 'empty string...',
 		id: getId(),
 		votes: 0,
 	}
