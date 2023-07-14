@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Route, Routes, Link, useMatch } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Route, Routes, Link, useMatch, useNavigate } from 'react-router-dom'
 
 const Menu = () => {
 	const padding = {
@@ -150,11 +150,24 @@ const App = () => {
 		},
 	])
 
-	const [notification, setNotification] = useState('')
+	const [notification, setNotification] = useState(null)
+
+	const navigate = useNavigate()
+
+	useEffect(() => {
+		if (notification) {
+			setTimeout(() => {
+				setNotification(null)
+			}, 5000)
+		}
+	}, [notification])
 
 	const addNew = (anecdote) => {
 		anecdote.id = Math.round(Math.random() * 10000)
 		setAnecdotes(anecdotes.concat(anecdote))
+		setNotification(`A new note '${anecdote.content}' was added!`)
+		console.log('created')
+		navigate('/')
 	}
 
 	const anecdoteById = (id) => anecdotes.find((a) => a.id === id)
@@ -178,6 +191,7 @@ const App = () => {
 	return (
 		<div>
 			<h1>Software anecdotes</h1>
+			<p>{notification}</p>
 			<Menu />
 			<Routes>
 				<Route
