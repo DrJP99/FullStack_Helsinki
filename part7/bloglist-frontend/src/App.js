@@ -10,6 +10,7 @@ import UserContext from './reducers/user'
 import LoginForm from './components/LoginForm'
 import { Route, Routes } from 'react-router-dom'
 import Users from './components/Users'
+import User from './components/User'
 
 const App = () => {
 	const [notification, notificationDispatch] = useContext(NotificationContext)
@@ -53,6 +54,7 @@ const App = () => {
 			<Routes>
 				<Route path='/' element={<Blogs />} />
 				<Route path='/users' element={<Users />} />
+				<Route path='/user/:id' element={<User />} />
 			</Routes>
 		</div>
 	)

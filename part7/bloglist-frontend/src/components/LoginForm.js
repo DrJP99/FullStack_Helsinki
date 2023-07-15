@@ -106,13 +106,6 @@ const LoginForm = () => {
 		)
 	}
 
-	const newBlogRef = useRef()
-	const createNewForm = () => (
-		<Togglable buttonLabel='new' ref={newBlogRef}>
-			<BlogForm />
-		</Togglable>
-	)
-
 	return (
 		<div>
 			{!user ? (
@@ -123,7 +116,6 @@ const LoginForm = () => {
 						{user.name} logged in{' '}
 						<button onClick={handleLogout}>logout</button>
 					</p>
-					{createNewForm()}
 				</div>
 			)}
 		</div>

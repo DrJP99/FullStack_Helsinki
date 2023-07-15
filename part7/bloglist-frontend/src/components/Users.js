@@ -1,5 +1,6 @@
 import { useQuery, useQueryClient } from 'react-query'
 import { getAllUsers } from '../services/users'
+import { Link, useParams } from 'react-router-dom'
 
 const Users = () => {
 	const queryClient = useQueryClient()
@@ -38,7 +39,11 @@ const Users = () => {
 				<tbody>
 					{users.map((user) => (
 						<tr key={user.id}>
-							<td>{user.username}</td>
+							<td>
+								<Link to={`/user/${user.id}`}>
+									{user.username}
+								</Link>
+							</td>
 							<td>{user.blogs.length}</td>
 						</tr>
 					))}

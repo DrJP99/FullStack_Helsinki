@@ -1,13 +1,17 @@
-import { useContext } from 'react'
+import { useContext, useRef } from 'react'
 import { useQuery, useQueryClient, useMutation } from 'react-query'
 import Blog from './Blog'
 import Togglable from './Togglable'
 import { del, getAll, update } from '../services/blogs'
 import NotificationContext from '../reducers/notification'
+import UserContext from '../reducers/user'
+import BlogForm from './BlogForm'
 
 const Blogs = () => {
+	const newBlogRef = useRef()
 	const queryClient = useQueryClient()
 	const [notification, notificationDispatch] = useContext(NotificationContext)
+	const [user, userDispatch] = useContext(UserContext)
 
 	const sort_blogs = () => {
 		blogs.sort((a, b) => {
@@ -98,8 +102,15 @@ const Blogs = () => {
 	const blogs = result.data
 	sort_blogs()
 
+	const createNewForm = () => (
+		<Togglable buttonLabel='new' ref={newBlogRef}>
+			<BlogForm />
+		</Togglable>
+	)
+
 	return (
 		<div>
+			{user ? createNewForm() : null}
 			{blogs.map((blog) => (
 				<div key={blog.id} style={blogStyle}>
 					<Togglable
