@@ -1,19 +1,70 @@
-import { useQuery, useQueryClient } from 'react-query'
+import { useContext } from 'react'
+import { useQuery, useQueryClient, useMutation } from 'react-query'
 import Blog from './Blog'
 import Togglable from './Togglable'
-import { getAll } from '../services/blogs'
+import { del, getAll, update } from '../services/blogs'
+import NotificationContext from '../reducers/notification'
 
 const Blogs = () => {
 	const queryClient = useQueryClient()
+	const [notification, notificationDispatch] = useContext(NotificationContext)
 
-	const handleDelete = (target) => {
+	const deleteBlogMutation = useMutation(del, {
+		onSuccess: (res) => {
+			queryClient.refetchQueries('blogs')
+			notificationDispatch({
+				type: 'SET_NOTIF',
+				payload: `Blog successfully deleted`,
+			})
+		},
+		onError: (error) => {
+			console.log(error.message)
+			notificationDispatch({
+				type: 'SET_NOTIF',
+				payload: `Blog deletion failed`,
+			})
+		},
+	})
+	const handleDelete = async (blog) => {
 		// event.preventDefault()
-		console.log('want to delete...', target)
+		if (
+			window.confirm(
+				`Do you want to delete ${blog.title} by ${blog.author}?`
+			)
+		) {
+			console.log('want to delete...', blog)
+			deleteBlogMutation.mutate(blog)
+		}
 	}
 
-	const handleLike = (target) => {
+	const updateBlogMutation = useMutation(update, {
+		onSuccess: (blog) => {
+			console.log(blog)
+			notificationDispatch({
+				type: 'SET_NOTIF',
+				payload: `Liked blog '${blog.title}' by '${blog.author}'`,
+			})
+			queryClient.setQueryData(
+				'blogs',
+				blogs.map((b) => (b.id !== blog.id ? b : blog))
+			)
+		},
+		onError: (error) => {
+			console.log(error.message)
+			notificationDispatch({
+				type: 'SET_NOTIF',
+				payload: `Blog failed to like`,
+			})
+		},
+	})
+	const handleLike = async (blog) => {
 		// event.preventDefault()
-		console.log('want to like...', target)
+		console.log('want to like...', blog)
+		updateBlogMutation.mutate({
+			...blog,
+			likes: blog.likes + 1,
+			user: blog.user.id,
+		})
 	}
 
 	const blogStyle = {

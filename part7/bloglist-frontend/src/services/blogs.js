@@ -26,13 +26,13 @@ export const create = async (newObject) => {
 	return res.data
 }
 
-const update = async (updatedObject) => {
+export const update = async (updatedObject) => {
 	const id = updatedObject.id
 	const res = await axios.put(`${baseUrl}/${id}`, updatedObject)
 	return res.data
 }
 
-const del = async (deleteObject) => {
+export const del = async (deleteObject) => {
 	const config = {
 		headers: { Authorization: token },
 	}

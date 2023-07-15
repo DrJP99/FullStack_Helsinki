@@ -20,6 +20,13 @@ const BlogForm = () => {
 				payload: `a new blog '${new_blog.title}' by '${new_blog.author}' was successfully added!`,
 			})
 		},
+		onError: (error) => {
+			console.log(error.message)
+			notificationDispatch({
+				type: 'SET_NOTIF',
+				payload: `Blog failed to add`,
+			})
+		},
 	})
 	const handleSubmit = async (event) => {
 		event.preventDefault()
