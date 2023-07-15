@@ -1,6 +1,6 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjY0YWNiYTVmNDBmZmVlY2YwNGExYTY0YSIsImlhdCI6MTY4OTA0NTE1MSwiZXhwIjoxNjg5MDQ4NzUxfQ.jwNAO8_UElXv-OdK_sqXiZwC9B8PVE1E-YrL3jhtkdU
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImRyanA5OSIsImlkIjoiNjRhZDkxOTkxNzM0YjE1MTRlYjg5MzRhIiwiaWF0IjoxNjg5NDA0NTcxfQ.9h-beeUX4-DY_y8nGlDUy_vsK5T1Htg3GX3eQoNBQyE
 
 {
     "title": "Testing out a new thing with tokens...",

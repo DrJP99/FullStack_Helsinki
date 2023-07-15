@@ -86,6 +86,16 @@ const BlogPage = ({ blog }) => {
 			{user && user.username === blog.user.username ? (
 				<button onClick={handleDelete}>delete</button>
 			) : null}
+			{blog.comments ? (
+				<div>
+					<h3>comments</h3>
+					<ul>
+						{blog.comments.map((comment, i) => (
+							<li key={i}>{comment}</li>
+						))}
+					</ul>
+				</div>
+			) : null}
 		</div>
 	)
 }
