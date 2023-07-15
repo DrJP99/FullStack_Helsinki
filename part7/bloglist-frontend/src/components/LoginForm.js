@@ -14,20 +14,6 @@ const LoginForm = () => {
 	const [user, userDispatch] = useContext(UserContext)
 	const [notification, notificationDispatch] = useContext(NotificationContext)
 
-	useEffect(() => {
-		const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
-		if (loggedUserJSON) {
-			const user = JSON.parse(loggedUserJSON)
-			userDispatch({
-				type: 'SET_USER',
-				payload: {
-					...user,
-				},
-			})
-			blogService.setToken(user.token)
-		}
-	}, [])
-
 	const handleLogin = async (e) => {
 		e.preventDefault()
 		console.log('logging in with', username, password)

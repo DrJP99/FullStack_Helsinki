@@ -2,27 +2,9 @@ import { useQuery, useQueryClient } from 'react-query'
 import { getAllUsers } from '../services/users'
 import { Link, useParams } from 'react-router-dom'
 
-const Users = () => {
+const Users = ({ users }) => {
 	const queryClient = useQueryClient()
 	//..
-
-	const result = useQuery('users', getAllUsers, {
-		refetchOnWindowFocus: false,
-		retry: 2,
-	})
-
-	if (result.isLoading) {
-		return <div>loading data...</div>
-	}
-	if (result.isError) {
-		return (
-			<div>
-				Users service is not available due to problems with server
-			</div>
-		)
-	}
-
-	const users = result.data
 
 	return (
 		<div>

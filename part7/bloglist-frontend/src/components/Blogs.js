@@ -6,8 +6,9 @@ import { del, getAll, update } from '../services/blogs'
 import NotificationContext from '../reducers/notification'
 import UserContext from '../reducers/user'
 import BlogForm from './BlogForm'
+import { Link } from 'react-router-dom'
 
-const Blogs = () => {
+const Blogs = ({ blogs }) => {
 	const newBlogRef = useRef()
 	const queryClient = useQueryClient()
 	const [notification, notificationDispatch] = useContext(NotificationContext)
@@ -19,65 +20,6 @@ const Blogs = () => {
 		})
 	}
 
-	const deleteBlogMutation = useMutation(del, {
-		onSuccess: (res) => {
-			queryClient.refetchQueries('blogs')
-			notificationDispatch({
-				type: 'SET_NOTIF',
-				payload: `Blog successfully deleted`,
-			})
-		},
-		onError: (error) => {
-			console.log(error.message)
-			notificationDispatch({
-				type: 'SET_NOTIF',
-				payload: `Blog deletion failed`,
-			})
-		},
-	})
-	const handleDelete = async (blog) => {
-		// event.preventDefault()
-		if (
-			window.confirm(
-				`Do you want to delete ${blog.title} by ${blog.author}?`
-			)
-		) {
-			console.log('want to delete...', blog)
-			deleteBlogMutation.mutate(blog)
-		}
-	}
-
-	const updateBlogMutation = useMutation(update, {
-		onSuccess: (blog) => {
-			console.log(blog)
-			notificationDispatch({
-				type: 'SET_NOTIF',
-				payload: `Liked blog '${blog.title}' by '${blog.author}'`,
-			})
-			queryClient.setQueryData(
-				'blogs',
-				blogs.map((b) => (b.id !== blog.id ? b : blog))
-			)
-			sort_blogs()
-		},
-		onError: (error) => {
-			console.log(error.message)
-			notificationDispatch({
-				type: 'SET_NOTIF',
-				payload: `Blog failed to like`,
-			})
-		},
-	})
-	const handleLike = async (blog) => {
-		// event.preventDefault()
-		console.log('want to like...', blog)
-		updateBlogMutation.mutate({
-			...blog,
-			likes: blog.likes + 1,
-			user: blog.user.id,
-		})
-	}
-
 	const blogStyle = {
 		paddingTop: 10,
 		paddingLeft: 2,
@@ -85,21 +27,6 @@ const Blogs = () => {
 		borderWidth: 1,
 		marginBottom: 5,
 	}
-
-	const result = useQuery('blogs', getAll, {
-		refetchOnWindowFocus: false,
-		retry: 2,
-	})
-
-	if (result.isLoading) {
-		return <div>loading data...</div>
-	}
-
-	if (result.isError) {
-		return <div>Blog service is not available at the moment</div>
-	}
-
-	const blogs = result.data
 	sort_blogs()
 
 	const createNewForm = () => (
@@ -113,7 +40,10 @@ const Blogs = () => {
 			{user ? createNewForm() : null}
 			{blogs.map((blog) => (
 				<div key={blog.id} style={blogStyle}>
-					<Togglable
+					<Link to={`/blogs/${blog.id}`} key={blog.id}>
+						{blog.title} by {blog.author}
+					</Link>
+					{/* <Togglable
 						buttonLabel='view'
 						before={blog.title + ' ' + blog.author}
 					>
@@ -122,7 +52,7 @@ const Blogs = () => {
 							handleLike={handleLike}
 							handleDelete={handleDelete}
 						/>
-					</Togglable>
+					</Togglable> */}
 				</div>
 			))}
 		</div>

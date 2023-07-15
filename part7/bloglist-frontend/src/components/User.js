@@ -36,29 +36,7 @@ const UserBlogs = ({ id }) => {
 	)
 }
 
-const User = () => {
-	const id = useParams().id
-
-	const result = useQuery('users', getAllUsers, {
-		refetchOnWindowFocus: false,
-		retry: 2,
-	})
-
-	if (result.isLoading) {
-		return <div>loading data...</div>
-	}
-	if (result.isError) {
-		return (
-			<div>
-				Users service is not available due to problems with server
-			</div>
-		)
-	}
-
-	const users = result.data
-
-	const selectedUser = users.find((u) => u.id === id)
-
+const User = ({ selectedUser }) => {
 	if (!selectedUser) {
 		return <div>user not found...</div>
 	}
