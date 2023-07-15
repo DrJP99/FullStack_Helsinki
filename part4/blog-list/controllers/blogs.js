@@ -39,7 +39,10 @@ blogsRouter.post('/', async (req, res, next) => {
 
 blogsRouter.post('/:id/comments', async (req, res) => {
 	const content = req.body.content
-
+	if (!content) {
+		return res.status(400).json({ error: 'bad request' })
+	}
+	console.log(req.params.id, content)
 	const blog = await Blog.findById(req.params.id)
 
 	let new_blog = blog

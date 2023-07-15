@@ -26,6 +26,13 @@ export const create = async (newObject) => {
 	return res.data
 }
 
+export const addComment = async (blog, content) => {
+	console.log('blog and content', blog, content)
+	const id = blog.id
+	const res = await axios.post(`${baseUrl}/${id}/comments`, { content })
+	return res.data
+}
+
 export const update = async (updatedObject) => {
 	const id = updatedObject.id
 	const res = await axios.put(`${baseUrl}/${id}`, updatedObject)

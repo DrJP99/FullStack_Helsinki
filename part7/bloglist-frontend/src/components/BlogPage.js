@@ -1,7 +1,7 @@
 import { useQueryClient, useMutation } from 'react-query'
 import { useNavigate } from 'react-router-dom'
-import { useContext } from 'react'
-import { del, update } from '../services/blogs'
+import { useContext, useState } from 'react'
+import { addComment, del, update } from '../services/blogs'
 import NotificationContext from '../reducers/notification'
 import UserContext from '../reducers/user'
 
@@ -9,6 +9,8 @@ const BlogPage = ({ blog }) => {
 	const queryClient = useQueryClient()
 	const [notification, notificationDispatch] = useContext(NotificationContext)
 	const [user, userDispatch] = useContext(UserContext)
+
+	const [comm, setComm] = useState('')
 
 	const navigate = useNavigate()
 	const deleteBlogMutation = useMutation(del, {
@@ -50,6 +52,31 @@ const BlogPage = ({ blog }) => {
 		},
 	})
 
+	const addCommentMutation = useMutation(
+		({ blog, content }) => addComment(blog, content),
+		{
+			onSuccess: (blog) => {
+				notificationDispatch({
+					type: 'SET_NOTIF',
+					payload: `comment added succesfully`,
+				})
+				const blogs = queryClient.getQueryData('blogs')
+				queryClient.setQueryData(
+					'blogs',
+					blogs.map((b) => (b.id !== blog.id ? b : blog))
+				)
+				setComm('')
+			},
+			onError: (error) => {
+				console.log(error.message)
+				notificationDispatch({
+					type: 'SET_NOTIF',
+					payload: `Failed to add comment`,
+				})
+			},
+		}
+	)
+
 	if (!blog) {
 		return <div>Blog not found...</div>
 	}
@@ -75,6 +102,13 @@ const BlogPage = ({ blog }) => {
 		})
 	}
 
+	const handleComment = async (e) => {
+		e.preventDefault()
+
+		const content = comm
+		addCommentMutation.mutate({ blog, content })
+	}
+
 	return (
 		<div>
 			<h2>{blog.title}</h2>
@@ -89,6 +123,19 @@ const BlogPage = ({ blog }) => {
 			{blog.comments ? (
 				<div>
 					<h3>comments</h3>
+					<form>
+						<input
+							type='text'
+							value={comm}
+							onChange={(e) => {
+								console.log(e.target.value)
+								setComm(e.target.value)
+							}}
+						/>
+						<button onClick={(e) => handleComment(e)}>
+							add comment
+						</button>
+					</form>
 					<ul>
 						{blog.comments.map((comment, i) => (
 							<li key={i}>{comment}</li>
