@@ -12,12 +12,12 @@ const setToken = (newToken) => {
 	console.log(token)
 }
 
-const getAll = () => {
+export const getAll = () => {
 	const request = axios.get(baseUrl)
 	return request.then((response) => response.data)
 }
 
-const create = async (newObject) => {
+export const create = async (newObject) => {
 	const config = {
 		headers: { Authorization: token },
 	}

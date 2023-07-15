@@ -1,23 +1,45 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
+import { useMutation, useQueryClient } from 'react-query'
+import NotificationContext from '../reducers/notification'
+import { create } from '../services/blogs'
 
-const BlogForm = ({ addBlog }) => {
+const BlogForm = () => {
+	const queryClient = useQueryClient()
+	const [notification, notificationDispatch] = useContext(NotificationContext)
+
 	const [title, setTitle] = useState('')
 	const [author, setAuthor] = useState('')
 	const [url, setUrl] = useState('')
 
+	const addBlogMutation = useMutation(create, {
+		onSuccess: (new_blog) => {
+			const blogs = queryClient.getQueryData('blogs')
+			queryClient.setQueryData('blogs', blogs.concat(new_blog))
+			notificationDispatch({
+				type: 'SET_NOTIF',
+				payload: `a new blog '${new_blog.title}' by '${new_blog.author}' was successfully added!`,
+			})
+		},
+	})
 	const handleSubmit = async (event) => {
 		event.preventDefault()
-
-		const new_blog = {
-			title,
-			author,
-			url,
+		try {
+			const new_blog = {
+				title,
+				author,
+				url,
+			}
+			addBlogMutation.mutate(new_blog)
+			setTitle('')
+			setAuthor('')
+			setUrl('')
+		} catch (e) {
+			console.error(e.message)
+			notificationDispatch({
+				type: 'SET_NOTIF',
+				payload: `Error creating new blog`,
+			})
 		}
-
-		const res = await addBlog(new_blog)
-		setTitle('')
-		setAuthor('')
-		setUrl('')
 	}
 
 	return (
