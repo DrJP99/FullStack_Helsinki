@@ -9,6 +9,12 @@ const Blogs = () => {
 	const queryClient = useQueryClient()
 	const [notification, notificationDispatch] = useContext(NotificationContext)
 
+	const sort_blogs = () => {
+		blogs.sort((a, b) => {
+			return b.likes - a.likes
+		})
+	}
+
 	const deleteBlogMutation = useMutation(del, {
 		onSuccess: (res) => {
 			queryClient.refetchQueries('blogs')
@@ -48,6 +54,7 @@ const Blogs = () => {
 				'blogs',
 				blogs.map((b) => (b.id !== blog.id ? b : blog))
 			)
+			sort_blogs()
 		},
 		onError: (error) => {
 			console.log(error.message)
@@ -89,6 +96,7 @@ const Blogs = () => {
 	}
 
 	const blogs = result.data
+	sort_blogs()
 
 	return (
 		<div>
