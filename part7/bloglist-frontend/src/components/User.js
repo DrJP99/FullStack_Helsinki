@@ -1,6 +1,6 @@
 import { useQuery, useQueryClient } from 'react-query'
 import { getAllUsers } from '../services/users'
-import { useParams } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 import { getAll } from '../services/blogs'
 
 const UserBlogs = ({ id }) => {
@@ -29,7 +29,9 @@ const UserBlogs = ({ id }) => {
 		<div>
 			<ul>
 				{user_blogs.map((b) => (
-					<li key={b.id}>{b.title}</li>
+					<li key={b.id}>
+						<Link to={`/blogs/${b.id}`}>{b.title}</Link>
+					</li>
 				))}
 			</ul>
 		</div>
@@ -43,8 +45,9 @@ const User = ({ selectedUser }) => {
 
 	return (
 		<div>
-			<h1>{selectedUser.name}</h1>
-			<h3>added blogs:</h3>
+			<h1>User</h1>
+			<h2>{selectedUser.name}</h2>
+			<h5>added blogs:</h5>
 			<UserBlogs id={selectedUser.id} />
 		</div>
 	)

@@ -4,6 +4,7 @@ import { useContext, useState } from 'react'
 import { addComment, del, update } from '../services/blogs'
 import NotificationContext from '../reducers/notification'
 import UserContext from '../reducers/user'
+import { Button, Form } from 'react-bootstrap'
 
 const BlogPage = ({ blog }) => {
 	const queryClient = useQueryClient()
@@ -111,31 +112,34 @@ const BlogPage = ({ blog }) => {
 
 	return (
 		<div>
+			<h1>Blog</h1>
 			<h2>{blog.title}</h2>
 			<p>{blog.info}</p>
 			<p>
-				{blog.likes} likes <button onClick={handleLike}>like</button>
+				{blog.likes} likes <Button onClick={handleLike}>like</Button>
 			</p>
 			<p>Added by {blog.user.name}</p>
 			{user && user.username === blog.user.username ? (
-				<button onClick={handleDelete}>delete</button>
+				<Button onClick={handleDelete}>delete</Button>
 			) : null}
 			{blog.comments ? (
 				<div>
 					<h3>comments</h3>
-					<form>
-						<input
-							type='text'
-							value={comm}
-							onChange={(e) => {
-								console.log(e.target.value)
-								setComm(e.target.value)
-							}}
-						/>
-						<button onClick={(e) => handleComment(e)}>
-							add comment
-						</button>
-					</form>
+					<Form>
+						<Form.Group>
+							<Form.Control
+								type='text'
+								value={comm}
+								onChange={(e) => {
+									console.log(e.target.value)
+									setComm(e.target.value)
+								}}
+							/>
+							<Button onClick={(e) => handleComment(e)}>
+								add comment
+							</Button>
+						</Form.Group>
+					</Form>
 					<ul>
 						{blog.comments.map((comment, i) => (
 							<li key={i}>{comment}</li>

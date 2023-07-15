@@ -6,6 +6,7 @@ import usersService from '../services/users'
 import NotificationContext from '../reducers/notification'
 import BlogForm from './BlogForm'
 import Togglable from './Togglable'
+import { Button, Form } from 'react-bootstrap'
 
 const LoginForm = () => {
 	const [username, setUsername] = useState('')
@@ -60,39 +61,36 @@ const LoginForm = () => {
 		setPassword('')
 	}
 
-	const Form = () => {
+	const MyForm = () => {
 		return (
 			<div>
 				<h2>Login</h2>
-				<form onSubmit={handleLogin}>
-					<div>
-						username:{' '}
-						<input
+				<Form onSubmit={handleLogin}>
+					<Form.Group>
+						<Form.Label>username:</Form.Label>
+						<Form.Control
 							type='text'
-							value={username}
 							name='Username'
-							onChange={({ target }) => {
-								console.log(target.value)
-								setUsername(target.value)
-							}}
+							value={username}
+							onChange={({ target }) => setUsername(target.value)}
 						/>
-					</div>
-					<div>
-						password:{' '}
-						<input
+						<Form.Label>password:</Form.Label>
+						<Form.Control
 							type='password'
-							value={password}
 							name='Password'
+							value={password}
 							onChange={({ target }) => setPassword(target.value)}
 						/>
-					</div>
-					<button type='submit'>login</button>
-				</form>
+						<Button variant='primary' type='submit'>
+							login
+						</Button>
+					</Form.Group>
+				</Form>
 			</div>
 		)
 	}
 
-	return <div>{!user ? Form() : null}</div>
+	return <div>{!user ? MyForm() : null}</div>
 }
 
 export default LoginForm

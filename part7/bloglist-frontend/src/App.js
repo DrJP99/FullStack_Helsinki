@@ -17,7 +17,8 @@ import BlogPage from './components/BlogPage'
 import { getAll } from './services/blogs'
 import { getAllUsers } from './services/users'
 import blogService from './services/blogs'
-import Navbar from './components/Navbar'
+import NavigationBar from './components/NavigationBar'
+import { Alert } from 'react-bootstrap'
 
 const App = () => {
 	const [notification, notificationDispatch] = useContext(NotificationContext)
@@ -52,20 +53,7 @@ const App = () => {
 			return null
 		}
 
-		return (
-			<div
-				style={{
-					background: 'lightgrey',
-					fontSize: 20,
-					borderStyle: 'solid',
-					borderRadius: 5,
-					padding: 10,
-					marginBottom: 10,
-				}}
-			>
-				{message}
-			</div>
-		)
+		return <Alert variant='success'>{message}</Alert>
 	}
 
 	const blog_result = useQuery('blogs', getAll, {
@@ -103,21 +91,25 @@ const App = () => {
 		: null
 
 	return (
-		<div>
-			<Navbar />
-			<h2>blogs</h2>
-			<Notification message={notification} />
-			<LoginForm />
-			<Routes>
-				<Route path='/' element={<Blogs blogs={blogs} />} />
-				<Route path='/users' element={<Users users={users} />} />
-				<Route
-					path='/user/:id'
-					element={<User selectedUser={my_user} />}
-				/>
-				<Route path='/blogs/:id' element={<BlogPage blog={blog} />} />
-			</Routes>
-		</div>
+		<>
+			<NavigationBar />
+			<div className='container'>
+				<Notification message={notification} />
+				<LoginForm />
+				<Routes>
+					<Route path='/' element={<Blogs blogs={blogs} />} />
+					<Route path='/users' element={<Users users={users} />} />
+					<Route
+						path='/users/:id'
+						element={<User selectedUser={my_user} />}
+					/>
+					<Route
+						path='/blogs/:id'
+						element={<BlogPage blog={blog} />}
+					/>
+				</Routes>
+			</div>
+		</>
 	)
 }
 

@@ -1,4 +1,4 @@
-import { useContext, useRef } from 'react'
+import { useContext, useEffect, useRef } from 'react'
 import { useQuery, useQueryClient, useMutation } from 'react-query'
 import Blog from './Blog'
 import Togglable from './Togglable'
@@ -9,7 +9,6 @@ import BlogForm from './BlogForm'
 import { Link } from 'react-router-dom'
 
 const Blogs = ({ blogs }) => {
-	const newBlogRef = useRef()
 	const queryClient = useQueryClient()
 	const [notification, notificationDispatch] = useContext(NotificationContext)
 	const [user, userDispatch] = useContext(UserContext)
@@ -29,30 +28,28 @@ const Blogs = ({ blogs }) => {
 	}
 	sort_blogs()
 
+	const newBlogRef = useRef()
 	const createNewForm = () => (
 		<Togglable buttonLabel='new' ref={newBlogRef}>
 			<BlogForm />
 		</Togglable>
 	)
 
+	useEffect(() => {
+		if (blogs) {
+			newBlogRef.current.setVisible(false)
+		}
+	}, [blogs])
+
 	return (
 		<div>
+			<h1>Blogs</h1>
 			{user ? createNewForm() : null}
 			{blogs.map((blog) => (
 				<div key={blog.id} style={blogStyle}>
 					<Link to={`/blogs/${blog.id}`} key={blog.id}>
 						{blog.title} by {blog.author}
 					</Link>
-					{/* <Togglable
-						buttonLabel='view'
-						before={blog.title + ' ' + blog.author}
-					>
-						<Blog
-							blog={blog}
-							handleLike={handleLike}
-							handleDelete={handleDelete}
-						/>
-					</Togglable> */}
 				</div>
 			))}
 		</div>

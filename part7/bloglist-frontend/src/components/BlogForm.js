@@ -2,6 +2,7 @@ import { useState, useContext } from 'react'
 import { useMutation, useQueryClient } from 'react-query'
 import NotificationContext from '../reducers/notification'
 import { create } from '../services/blogs'
+import { Button, Form } from 'react-bootstrap'
 
 const BlogForm = () => {
 	const queryClient = useQueryClient()
@@ -51,36 +52,32 @@ const BlogForm = () => {
 
 	return (
 		<div>
-			<form onSubmit={handleSubmit}>
-				<div>
-					title:{' '}
-					<input
+			<Form onSubmit={handleSubmit}>
+				<Form.Group>
+					<Form.Label>title: </Form.Label>
+					<Form.Control
 						type='text'
 						value={title}
 						nmae='Title'
 						onChange={({ target }) => setTitle(target.value)}
 					/>
-				</div>
-				<div>
-					author:{' '}
-					<input
+					<Form.Label>author: </Form.Label>
+					<Form.Control
 						type='text'
 						value={author}
 						nmae='Author'
 						onChange={({ target }) => setAuthor(target.value)}
 					/>
-				</div>
-				<div>
-					url:{' '}
-					<input
+					<Form.Label>url: </Form.Label>
+					<Form.Control
 						type='text'
 						value={url}
 						nmae='URL'
 						onChange={({ target }) => setUrl(target.value)}
 					/>
-				</div>
-				<button type='submit'>create</button>
-			</form>
+					<Button type='submit'>create</Button>
+				</Form.Group>
+			</Form>
 		</div>
 	)
 }
