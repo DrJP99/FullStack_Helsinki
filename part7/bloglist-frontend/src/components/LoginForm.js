@@ -92,20 +92,7 @@ const LoginForm = () => {
 		)
 	}
 
-	return (
-		<div>
-			{!user ? (
-				Form()
-			) : (
-				<div>
-					<p>
-						{user.name} logged in{' '}
-						<button onClick={handleLogout}>logout</button>
-					</p>
-				</div>
-			)}
-		</div>
-	)
+	return <div>{!user ? Form() : null}</div>
 }
 
 export default LoginForm

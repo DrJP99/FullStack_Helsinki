@@ -17,6 +17,7 @@ import BlogPage from './components/BlogPage'
 import { getAll } from './services/blogs'
 import { getAllUsers } from './services/users'
 import blogService from './services/blogs'
+import Navbar from './components/Navbar'
 
 const App = () => {
 	const [notification, notificationDispatch] = useContext(NotificationContext)
@@ -103,6 +104,7 @@ const App = () => {
 
 	return (
 		<div>
+			<Navbar />
 			<h2>blogs</h2>
 			<Notification message={notification} />
 			<LoginForm />
