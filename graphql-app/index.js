@@ -58,7 +58,7 @@ type Mutation {
         street: String!
         city: String!
     ): Person
-    editNumber(
+    editPerson(
         name: String!
         phone: String!
     ): Person
@@ -102,7 +102,7 @@ const resolvers = {
 			return person
 		},
 		editPerson: (root, args) => {
-			const person = person.find((p) => p.name === args.name)
+			const person = persons.find((p) => p.name === args.name)
 			if (!person) {
 				return null
 			}
@@ -111,7 +111,7 @@ const resolvers = {
 			persons = persons.map((p) =>
 				p.name === args.name ? updatedPerson : p
 			)
-			return persons
+			return updatedPerson
 		},
 	},
 }
