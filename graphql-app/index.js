@@ -177,12 +177,12 @@ const resolvers = {
 				})
 			}
 
-			const userFortoken = {
+			const userForToken = {
 				username: user.username,
 				id: user._id,
 			}
 
-			return { value: jwt.sign(userFortoken, process.env.JWT_SECRET) }
+			return { value: jwt.sign(userForToken, process.env.JWT_SECRET) }
 		},
 		addAsFriend: async (root, args, { currentUser }) => {
 			const isFriend = (person) => {
