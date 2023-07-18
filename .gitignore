@@ -1,3 +1,4 @@
 backend/.env
 part4/blog-list/.env
 graphql-app/.env
+part8/library-graphql/.env
