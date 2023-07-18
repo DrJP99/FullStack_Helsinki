@@ -1,27 +1,18 @@
 import { useState, useEffect } from 'react'
 import { useQuery } from '@apollo/client'
-import { ALL_BOOKS } from '../queries'
+import { ALL_BOOKS_BY_GENRE } from '../queries'
 
 const Books = (props) => {
-	const result = useQuery(ALL_BOOKS)
+	const result = useQuery(ALL_BOOKS_BY_GENRE, {
+		variables: {
+			genre: null,
+		},
+	})
 	const [selectedGenre, setSelectedGenre] = useState('all')
-	const [filteredBooks, setFilteredBooks] = useState([])
-
-	let filtered_books = []
+	const [availableGenres, setAvailableGenres] = useState(null)
 	let books = null
 
-	useEffect(() => {
-		if (books) {
-			if (selectedGenre === 'all') {
-				filtered_books = result.data.allBooks
-			} else {
-				filtered_books = result.data.allBooks.filter((b) =>
-					b.genres.includes(selectedGenre)
-				)
-			}
-			setFilteredBooks(filtered_books)
-		}
-	}, [selectedGenre, books])
+	console.log(result)
 
 	if (result.loading) {
 		return <div>loading books...</div>
@@ -29,14 +20,17 @@ const Books = (props) => {
 
 	books = result.data.allBooks
 
-	let genres = []
-	books.forEach((book) => {
-		book.genres.forEach((gen) => {
-			if (!genres.includes(gen)) {
-				genres = genres.concat(gen)
-			}
+	if (availableGenres === null) {
+		let genres = []
+		books.forEach((book) => {
+			book.genres.forEach((gen) => {
+				if (!genres.includes(gen)) {
+					genres = genres.concat(gen)
+				}
+			})
 		})
-	})
+		setAvailableGenres(genres)
+	}
 
 	return (
 		<div>
@@ -44,14 +38,22 @@ const Books = (props) => {
 			<div>
 				select genre:{' '}
 				<select
-					onChange={({ target }) => setSelectedGenre(target.value)}
+					onChange={({ target }) => {
+						setSelectedGenre(target.value)
+						console.log('refetching...')
+						result.refetch({
+							genre: target.value === 'all' ? null : target.value,
+						})
+					}}
 				>
 					<option value={'all'}>all</option>
-					{genres.map((g) => (
-						<option key={g} value={g}>
-							{g}
-						</option>
-					))}
+					{availableGenres === null
+						? null
+						: availableGenres.map((g) => (
+								<option key={g} value={g}>
+									{g}
+								</option>
+						  ))}
 				</select>
 			</div>
 			<table>
@@ -61,7 +63,7 @@ const Books = (props) => {
 						<th>author</th>
 						<th>published</th>
 					</tr>
-					{filteredBooks.map((a) => (
+					{books.map((a) => (
 						<tr key={a.title}>
 							<td>{a.title}</td>
 							<td>{a.author.name}</td>
