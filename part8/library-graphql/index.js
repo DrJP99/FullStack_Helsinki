@@ -67,27 +67,32 @@ const resolvers = {
 		bookCount: async () => await Book.collection.countDocuments(),
 		authorCount: async () => await Author.collection.countDocuments(),
 		allBooks: async (root, args) => {
-			// let new_list = books
+			const author = await Author.findOne({
+				name: args.author,
+			})
 
-			// if (args.author) {
-			// 	new_list = new_list.filter(
-			// 		(book) => book.author === args.author
-			// 	)
-			// }
-			// if (args.genre) {
-			// 	new_list = new_list.filter((book) =>
-			// 		book.genres.includes(args.genre)
-			// 	)
-			// }
-			return await Book.find({})
+			let new_list = await Book.find({})
+
+			if (args.author) {
+				new_list = new_list.filter(
+					(book) => book.author.toString() === author._id.toString()
+				)
+			}
+			if (args.genre) {
+				new_list = new_list.filter((book) =>
+					book.genres.includes(args.genre)
+				)
+			}
+			return new_list
 		},
 		allAuthors: async () => await Author.find({}),
 	},
-	// Book: {
-	// 	author: (root) => {
-	// 		return root.name
-	// 	},
-	// },
+	Book: {
+		author: async (root) => {
+			const id = root.author.toString()
+			return await Author.findById(id)
+		},
+	},
 	Author: {
 		// bookCount: (root) => {
 		// 	const author_books = books.filter(
@@ -109,9 +114,10 @@ const resolvers = {
 
 			const book = new Book({
 				...args,
-				author: new_author,
+				author: new_author._id,
 			})
 			await book.save()
+			console.log(book)
 			return book
 		},
 		editAuthor: (root, args) => {
