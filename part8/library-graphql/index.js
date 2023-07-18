@@ -105,36 +105,66 @@ const resolvers = {
 		addBook: async (root, args) => {
 			let new_author = await Author.findOne({ name: args.author })
 			if (!new_author) {
-				new_author = new Author({
-					name: args.author,
-				})
+				try {
+					new_author = new Author({
+						name: args.author,
+					})
 
-				await new_author.save()
+					await new_author.save()
+				} catch (error) {
+					throw new GraphQLError('invalid author', {
+						extensions: {
+							code: 'BADE_USER_INPUT',
+							invalidArgs: args.name,
+							error,
+						},
+					})
+				}
 			}
 
 			const book = new Book({
 				...args,
 				author: new_author._id,
 			})
-			await book.save()
-			console.log(book)
-			return book
+			try {
+				await book.save()
+				console.log(book)
+
+				return book
+			} catch (error) {
+				throw new GraphQLError('Saving book failed', {
+					extensions: {
+						code: 'BAD_USER_INPUT',
+						invalidArgs: args.name,
+						error,
+					},
+				})
+			}
 		},
-		editAuthor: (root, args) => {
-			const author = authors.find((a) => a.name === args.name)
-			if (!author) {
-				return null
+		editAuthor: async (root, args) => {
+			const author = await Author.findOne({ name: args.name })
+			if (!author || args.setBornTo) {
+				throw new GraphQLError('enter valid arguments', {
+					extensions: {
+						code: 'BAD_USER_INPUT',
+					},
+				})
 			}
 
-			const updatedAuthor = {
-				...author,
-				born: args.setBornTo,
+			try {
+				author.born = args.setBornTo
+				console.log(author)
+				await author.save()
+			} catch (error) {
+				throw new GraphQLError('enter valid arguments', {
+					extensions: {
+						code: 'BAD_USER_INPUT',
+						invalidArgs: args.name,
+						error,
+					},
+				})
 			}
-
-			authors = authors.map((a) =>
-				a.name === updatedAuthor.name ? updatedAuthor : a
-			)
-			return updatedAuthor
+			return author
 		},
 	},
 }
