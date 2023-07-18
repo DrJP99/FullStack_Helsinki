@@ -7,7 +7,6 @@ import {
 	InMemoryCache,
 	createHttpLink,
 } from '@apollo/client'
-import { ALL_AUTHORS, ALL_BOOKS } from './queries'
 import { BrowserRouter as Router } from 'react-router-dom'
 import { setContext } from '@apollo/client/link/context'
 
