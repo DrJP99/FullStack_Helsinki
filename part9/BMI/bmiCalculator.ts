@@ -29,10 +29,12 @@ const bmiCategories = (bmi: number) => {
 		return 'Overweight (Class II)';
 	} else if (bmi >= 40) {
 		return 'Overweight (Class III)';
+	} else {
+		return '';
 	}
 };
 
-const calcualteBmi = (height: number, mass: number) => {
+export const calcualteBmi = (height: number, mass: number) => {
 	const bmi: number = mass / (height / 100) ** 2;
 	let result: string = bmiCategories(bmi);
 
