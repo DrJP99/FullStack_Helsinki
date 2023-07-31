@@ -1,7 +1,7 @@
-interface multiplyValues {
-	value1: number;
-	value2: number;
-}
+// interface multiplyValues {
+// 	value1: number;
+// 	value2: number;
+// }
 
 const parseArguments = (args: string[]) => {
 	if (args.length < 4) throw new Error('Not enough arguments');

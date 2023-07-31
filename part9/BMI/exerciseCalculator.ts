@@ -1,12 +1,12 @@
-interface Exercise {
-	periodLength: number;
-	trainingDays: number;
-	success: boolean;
-	rating: number;
-	ratingDescription: string;
-	target: number;
-	average: number;
-}
+// interface Exercise {
+// 	periodLength: number;
+// 	trainingDays: number;
+// 	success: boolean;
+// 	rating: number;
+// 	ratingDescription: string;
+// 	target: number;
+// 	average: number;
+// }
 
 const parseExerciseArguments = (args: string[]) => {
 	if (args.length < 4) throw new Error('Not enough arguments');
@@ -32,7 +32,7 @@ const parseExerciseArguments = (args: string[]) => {
 	return { target, real };
 };
 
-const calculateExercise = (real: number[], target: number) => {
+export const calculateExercise = (real: number[], target: number) => {
 	const period: number = real.length;
 	const trainingDays: number = real.filter((d) => d !== 0).length;
 	let success: boolean = false;
