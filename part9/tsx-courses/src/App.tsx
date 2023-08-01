@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import Content from './components/Content';
 import Header from './components/Header';
 import Total from './components/Total';
