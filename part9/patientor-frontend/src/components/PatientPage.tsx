@@ -6,9 +6,7 @@ import diagnosisServices from '../services/diagnoses';
 
 const PatientPage = () => {
 	const [patient, setPatient] = useState<Patient | undefined>(undefined);
-	const [diagnoses, setDiagnoses] = useState<Diagnosis[] | undefined>(
-		undefined
-	);
+	const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([]);
 	const { id } = useParams();
 
 	useEffect(() => {
@@ -19,28 +17,25 @@ const PatientPage = () => {
 
 	useEffect(() => {
 		if (patient) {
-			const codes = patient.entries.map((e) =>
-				e.diagnosisCodes ? e.diagnosisCodes.map((d) => d) : []
-			);
-			console.log('CODES:', codes);
-			if (codes) {
-				try {
-					let DiagnosesList: Diagnosis[];
-					codes.forEach((c) => {
-						diagnosisServices.getDiagnosesByCode(c).then;
-					});
-				} catch (error) {
-					console.log(error);
+			let codes: string[] = [];
+			patient.entries.forEach((e) => {
+				if (e.diagnosisCodes) {
+					e.diagnosisCodes.forEach((d) => (codes = codes.concat(d)));
 				}
-			}
+			});
+			let diagnosesList: Diagnosis[] = [];
+			codes.forEach((c) => {
+				diagnosisServices.getDiagnosesByCode(c).then((res) => {
+					diagnosesList = diagnosesList.concat(res);
+					setDiagnoses(diagnosesList);
+				});
+			});
 		}
 	}, [patient]);
 
 	if (!patient) {
 		return <h3>no patient</h3>;
 	}
-
-	console.log(patient.entries);
 
 	return (
 		<div>
@@ -58,7 +53,14 @@ const PatientPage = () => {
 					{e.diagnosisCodes ? (
 						<ul>
 							{e.diagnosisCodes.map((d) => (
-								<li key={d}>{d}</li>
+								<li key={d}>
+									{d}{' '}
+									{
+										diagnoses.find(
+											(diagnosis) => diagnosis.code === d
+										)?.name
+									}
+								</li>
 							))}
 						</ul>
 					) : null}
