@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { createDiary } from '../services/diaryServices';
-import { DiaryEntry } from '../types';
+import { DiaryEntry, Visibility, Weather } from '../types';
 
 type DiaryFormProps = {
 	handleCreate: (object: object) => void;
@@ -35,28 +35,44 @@ const NewDiaryForm = ({ handleCreate }: DiaryFormProps) => {
 			<label>
 				date
 				<input
-					type='text'
+					type='date'
 					value={date}
 					onChange={({ target }) => setDate(target.value)}
 				/>
 			</label>
 			<br />
 			<label>
-				visibility
-				<input
-					type='text'
-					value={visibility}
-					onChange={({ target }) => setVisibility(target.value)}
-				/>
+				visibility:{' '}
+				{Object.values(Visibility).map((v) => (
+					<label key={v}>
+						{v}{' '}
+						<input
+							name='visibilityRadio'
+							type='radio'
+							value={v}
+							checked={visibility === v}
+							onChange={({ target }) =>
+								setVisibility(target.value)
+							}
+						/>
+					</label>
+				))}
 			</label>
 			<br />
 			<label>
-				weather
-				<input
-					type='text'
-					value={weather}
-					onChange={({ target }) => setWeather(target.value)}
-				/>
+				weather:{' '}
+				{Object.values(Weather).map((w) => (
+					<label>
+						{w}{' '}
+						<input
+							name='weatherRadio'
+							type='radio'
+							value={w}
+							checked={weather === w}
+							onChange={({ target }) => setWeather(target.value)}
+						/>
+					</label>
+				))}
 			</label>
 			<br />
 			<label>
