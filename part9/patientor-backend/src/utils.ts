@@ -5,7 +5,6 @@ const isString = (str: unknown): str is string => {
 };
 
 const isDate = (date: string): boolean => {
-	console.log('DoB', Date.parse(date));
 	return Boolean(Date.parse(date));
 };
 
@@ -60,8 +59,6 @@ export const toNewPatient = (object: unknown): NewPatient => {
 		throw new Error('Incorrect or missing data');
 	}
 
-	console.log(object);
-
 	if (
 		'name' in object &&
 		'dateOfBirth' in object &&
@@ -75,6 +72,7 @@ export const toNewPatient = (object: unknown): NewPatient => {
 			ssn: parseSsn(object.ssn),
 			gender: parseGender(object.gender),
 			occupation: parseOccupation(object.occupation),
+			entries: [],
 		};
 
 		return newPatient;
