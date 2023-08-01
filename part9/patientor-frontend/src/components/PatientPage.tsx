@@ -1,10 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Patient } from '../types';
+import { Patient, Diagnosis } from '../types';
 import patientServices from '../services/patients';
+import diagnosisServices from '../services/diagnoses';
 
 const PatientPage = () => {
 	const [patient, setPatient] = useState<Patient | undefined>(undefined);
+	const [diagnoses, setDiagnoses] = useState<Diagnosis[] | undefined>(
+		undefined
+	);
 	const { id } = useParams();
 
 	useEffect(() => {
@@ -12,6 +16,25 @@ const PatientPage = () => {
 			patientServices.getPatientById(id).then((res) => setPatient(res));
 		}
 	}, []);
+
+	useEffect(() => {
+		if (patient) {
+			const codes = patient.entries.map((e) =>
+				e.diagnosisCodes ? e.diagnosisCodes.map((d) => d) : []
+			);
+			console.log('CODES:', codes);
+			if (codes) {
+				try {
+					let DiagnosesList: Diagnosis[];
+					codes.forEach((c) => {
+						diagnosisServices.getDiagnosesByCode(c).then;
+					});
+				} catch (error) {
+					console.log(error);
+				}
+			}
+		}
+	}, [patient]);
 
 	if (!patient) {
 		return <h3>no patient</h3>;
