@@ -2,13 +2,11 @@ import { useState } from 'react';
 import { createDiary } from '../services/diaryServices';
 import { DiaryEntry } from '../types';
 
-const NewDiaryForm = ({
-	diaries,
-	setDiaries,
-}: {
-	diaries: DiaryEntry[];
-	setDiaries: React.Dispatch<React.SetStateAction<DiaryEntry[]>>;
-}) => {
+type DiaryFormProps = {
+	handleCreate: (object: object) => void;
+};
+
+const NewDiaryForm = ({ handleCreate }: DiaryFormProps) => {
 	const [date, setDate] = useState('');
 	const [visibility, setVisibility] = useState('');
 	const [weather, setWeather] = useState('');
@@ -24,7 +22,7 @@ const NewDiaryForm = ({
 			comment,
 		};
 
-		createDiary(diaryToAdd).then((res) => setDiaries(diaries.concat(res)));
+		handleCreate(diaryToAdd);
 
 		setDate('');
 		setVisibility('');
