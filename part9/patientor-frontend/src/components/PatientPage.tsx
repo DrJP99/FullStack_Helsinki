@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Patient, Diagnosis } from '../types';
+import { Patient, Diagnosis, Entry } from '../types';
 import patientServices from '../services/patients';
 import diagnosisServices from '../services/diagnoses';
+import Entries from './Entries/Entries';
 
 const PatientPage = () => {
 	const [patient, setPatient] = useState<Patient | undefined>(undefined);
@@ -43,29 +44,7 @@ const PatientPage = () => {
 			<div>gender: {patient.gender}</div>
 			<div>ssn: {patient.ssn}</div>
 			<div>occupation: {patient.occupation}</div>
-			<h3>entries</h3>
-
-			{patient.entries.map((e) => (
-				<div key={e.id}>
-					<p>
-						{e.date}: <i>{e.description}</i>
-					</p>
-					{e.diagnosisCodes ? (
-						<ul>
-							{e.diagnosisCodes.map((d) => (
-								<li key={d}>
-									{d}{' '}
-									{
-										diagnoses.find(
-											(diagnosis) => diagnosis.code === d
-										)?.name
-									}
-								</li>
-							))}
-						</ul>
-					) : null}
-				</div>
-			))}
+			<Entries entries={patient.entries} />
 		</div>
 	);
 };
