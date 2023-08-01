@@ -14,7 +14,7 @@ const Diaries = ({ diaries }: { diaries: DiaryEntry[] }) => {
 	return (
 		<div>
 			{diaries.map((d) => (
-				<Diary diary={d} />
+				<Diary key={d.id} diary={d} />
 			))}
 		</div>
 	);
