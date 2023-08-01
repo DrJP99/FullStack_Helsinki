@@ -5,7 +5,7 @@ import { toNewPatient } from '../utils';
 const router = express.Router();
 
 router.get('/', (_req, res) => {
-	res.send(patientService.getNonSensitivePatients());
+	res.send(patientService.getPatients());
 });
 
 router.get('/:id', (req, res) => {
